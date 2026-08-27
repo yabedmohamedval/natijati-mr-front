@@ -1,0 +1,176 @@
+<header
+  class="sticky top-0 z-50 border-b border-white/60 bg-white/80 backdrop-blur-xl"
+>
+  <div
+    class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8"
+  >
+    <!-- Logo -->
+    <a
+      routerLink="/"
+      class="flex items-center gap-3 no-underline"
+      aria-label="Natijati MR - Accueil"
+    >
+      <div class="brand-mark">
+        ن
+      </div>
+
+      <div>
+        <div
+          class="text-lg font-extrabold tracking-tight text-slate-900"
+        >
+          Natijati
+          <span class="text-emerald-700">
+            MR
+          </span>
+        </div>
+
+        <div
+          class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400"
+        >
+          {{ i18n.t('brand.subtitle') }}
+        </div>
+      </div>
+    </a>
+
+    <!-- Navigation desktop -->
+    <nav
+      class="hidden items-center gap-6 lg:flex"
+      aria-label="Navigation principale"
+    >
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link"
+      >
+        {{ i18n.t('nav.home') }}
+      </a>
+
+      <a
+        routerLink="/exams"
+        routerLinkActive="active"
+        class="nav-link"
+      >
+        {{ i18n.t('nav.exams') }}
+      </a>
+
+      <a
+        routerLink="/search"
+        routerLinkActive="active"
+        class="nav-link"
+      >
+        {{ i18n.t('nav.advancedSearch') }}
+      </a>
+
+      <a
+        routerLink="/statistics"
+        routerLinkActive="active"
+        class="nav-link"
+      >
+        {{ i18n.t('nav.statistics') }}
+      </a>
+
+      <a
+        routerLink="/institutions"
+        routerLinkActive="active"
+        class="nav-link"
+      >
+        {{ i18n.t('nav.institutions') }}
+      </a>
+
+      <a
+        routerLink="/about"
+        routerLinkActive="active"
+        class="nav-link"
+      >
+        {{ i18n.t('nav.about') }}
+      </a>
+    </nav>
+
+    <!-- Actions à droite -->
+    <div class="flex items-center gap-2">
+      <!-- Changement de langue -->
+      <button
+        mat-stroked-button
+        type="button"
+        class="language-button"
+        (click)="i18n.toggleLanguage()"
+      >
+        <mat-icon>language</mat-icon>
+
+        <span>
+          {{
+            i18n.isArabic()
+              ? i18n.t('language.fr')
+              : i18n.t('language.ar')
+          }}
+        </span>
+      </button>
+
+      <!-- Menu mobile -->
+      <button
+        mat-icon-button
+        type="button"
+        class="mobile-menu-button lg:hidden"
+        [matMenuTriggerFor]="mobileMenu"
+        [attr.aria-label]="i18n.t('nav.openMenu')"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Menu mobile -->
+<mat-menu
+  #mobileMenu="matMenu"
+  class="mobile-navigation-menu"
+>
+  <a
+    mat-menu-item
+    routerLink="/"
+  >
+    <mat-icon>home</mat-icon>
+    <span>{{ i18n.t('nav.home') }}</span>
+  </a>
+
+  <a
+    mat-menu-item
+    routerLink="/exams"
+  >
+    <mat-icon>school</mat-icon>
+    <span>{{ i18n.t('nav.exams') }}</span>
+  </a>
+
+  <a
+    mat-menu-item
+    routerLink="/search"
+  >
+    <mat-icon>manage_search</mat-icon>
+    <span>{{ i18n.t('nav.advancedSearch') }}</span>
+  </a>
+
+  <a
+    mat-menu-item
+    routerLink="/statistics"
+  >
+    <mat-icon>bar_chart</mat-icon>
+    <span>{{ i18n.t('nav.statistics') }}</span>
+  </a>
+
+  <a
+    mat-menu-item
+    routerLink="/institutions"
+  >
+    <mat-icon>account_balance</mat-icon>
+    <span>{{ i18n.t('nav.institutions') }}</span>
+  </a>
+
+  <a
+    mat-menu-item
+    routerLink="/about"
+  >
+    <mat-icon>info</mat-icon>
+    <span>{{ i18n.t('nav.about') }}</span>
+  </a>
+</mat-menu>

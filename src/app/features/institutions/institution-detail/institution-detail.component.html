@@ -1,0 +1,52 @@
+<main class="min-h-[calc(100vh-80px)] bg-slate-50 px-5 py-12 lg:px-8">
+  <section class="mx-auto max-w-5xl">
+    <a routerLink="/institutions" mat-button><mat-icon>arrow_back</mat-icon>{{ i18n.t('result.back') }}</a>
+
+    @if (loading()) {
+      <div class="grid place-items-center py-24"><mat-spinner diameter="44"></mat-spinner></div>
+    } @else if (detail(); as value) {
+      <div class="mt-6 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+        <header class="bg-gradient-to-r from-emerald-800 to-emerald-600 p-8 text-white">
+          <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-extrabold">{{ value.summary.examType }} {{ value.summary.year }}</span>
+          <h1 class="mt-5 text-3xl font-extrabold md:text-4xl">{{ label(value.summary.nameFr, value.summary.nameAr) }}</h1>
+          <p class="mt-2 text-emerald-100">{{ label(value.summary.wilayaFr, value.summary.wilayaAr) }}</p>
+        </header>
+
+        <div class="p-6 md:p-8">
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <article class="stat-card"><span>{{ i18n.t('statistics.candidates') }}</span><strong>{{ value.summary.candidateCount }}</strong></article>
+            <article class="stat-card"><span>{{ i18n.t('statistics.admitted') }}</span><strong>{{ value.summary.admittedCount }}</strong></article>
+            <article class="stat-card"><span>{{ i18n.t('statistics.average') }}</span><strong>{{ value.summary.averageScore?.toFixed(2) ?? '—' }}</strong></article>
+            <article class="stat-card"><span>{{ i18n.t('statistics.successRate') }}</span><strong>{{ value.summary.successRate.toFixed(2) }}%</strong></article>
+          </div>
+
+          <div class="mt-8 grid gap-6 lg:grid-cols-2">
+            <article class="rounded-2xl border border-slate-200 p-6">
+              <h2 class="text-xl font-extrabold text-slate-950">{{ i18n.t('institutions.decisions') }}</h2>
+              <div class="mt-5 space-y-4">
+                @for (item of value.decisionDistribution; track item.code) {
+                  <div>
+                    <div class="flex justify-between text-sm"><strong>{{ label(item.labelFr, item.labelAr, item.code) }}</strong><span>{{ item.count }} · {{ item.percentage }}%</span></div>
+                    <div class="mt-2 h-2 rounded-full bg-slate-100"><div class="h-full rounded-full bg-emerald-600" [style.width.%]="item.percentage"></div></div>
+                  </div>
+                } @empty { <p class="text-slate-500">{{ i18n.t('statistics.noSeries') }}</p> }
+              </div>
+            </article>
+
+            <article class="rounded-2xl border border-slate-200 p-6">
+              <h2 class="text-xl font-extrabold text-slate-950">{{ i18n.t('statistics.bySeries') }}</h2>
+              <div class="mt-5 space-y-4">
+                @for (item of value.seriesDistribution; track item.code) {
+                  <div>
+                    <div class="flex justify-between text-sm"><strong>{{ label(item.labelFr, item.labelAr, item.code) }}</strong><span>{{ item.count }} · {{ item.percentage }}%</span></div>
+                    <div class="mt-2 h-2 rounded-full bg-slate-100"><div class="h-full rounded-full bg-emerald-600" [style.width.%]="item.percentage"></div></div>
+                  </div>
+                } @empty { <p class="text-slate-500">{{ i18n.t('statistics.noSeries') }}</p> }
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+</main>

@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "natijati-mr",
+    "production": "natijati-mr"
+  },
+  "targets": {},
+  "etags": {}
+}

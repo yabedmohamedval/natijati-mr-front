@@ -1,0 +1,102 @@
+:host {
+  display: block;
+}
+
+.brand-mark {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+
+  border-radius: 0.9rem;
+
+  background:
+    linear-gradient(
+      145deg,
+      #059669,
+      #006b55
+    );
+
+  color: white;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+
+  box-shadow:
+    0 10px 25px rgb(5 150 105 / 20%);
+}
+
+.nav-link {
+  position: relative;
+
+  padding-block: 0.6rem;
+
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+
+  transition:
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.nav-link:hover {
+  color: #047857;
+}
+
+.nav-link::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  height: 2px;
+
+  border-radius: 999px;
+  background: #059669;
+
+  content: '';
+  opacity: 0;
+  transform: scaleX(0.25);
+
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.nav-link.active {
+  color: #047857;
+}
+
+.nav-link.active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.language-button {
+  min-width: auto;
+  border-color: #dbe7e2;
+  border-radius: 999px;
+
+  color: #065f46;
+  font-weight: 700;
+}
+
+.mobile-menu-button {
+  color: #065f46;
+}
+
+@media (max-width: 480px) {
+  .language-button {
+    padding-inline: 0.7rem;
+  }
+
+  .language-button mat-icon {
+    margin-right: 0;
+  }
+
+  .language-button span {
+    display: none;
+  }
+}

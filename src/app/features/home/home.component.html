@@ -1,0 +1,93 @@
+<main>
+  <section class="hero-shell overflow-hidden">
+    <div class="hero-orb hero-orb-one"></div>
+    <div class="hero-orb hero-orb-two"></div>
+    <div class="relative mx-auto grid max-w-7xl gap-14 px-5 pb-20 pt-16 lg:grid-cols-[1.05fr_.95fr] lg:px-8 lg:pb-28 lg:pt-24">
+      <div class="flex flex-col justify-center">
+        <div class="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-4 py-2 text-sm font-bold text-emerald-800 shadow-sm backdrop-blur">
+          <span class="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_5px_rgba(16,185,129,.12)]"></span>
+          {{ i18n.t('hero.badge') }}
+        </div>
+        <h1 class="max-w-3xl text-5xl font-extrabold leading-[1.08] tracking-[-0.045em] text-slate-950 md:text-6xl lg:text-7xl">
+          {{ i18n.t('hero.title1') }}
+          <span class="block text-gradient">{{ i18n.t('hero.title2') }}</span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600 md:text-xl">
+          {{ i18n.t('hero.description') }}
+        </p>
+        <div class="mt-9 flex flex-wrap gap-3 text-sm font-bold text-slate-600">
+          <span class="stat-pill"><mat-icon>school</mat-icon>{{ i18n.t('stats.exams') }}</span>
+          <span class="stat-pill"><mat-icon>groups</mat-icon>{{ i18n.t('stats.candidates') }}</span>
+          <span class="stat-pill"><mat-icon>verified</mat-icon>{{ i18n.t('stats.official') }}</span>
+        </div>
+      </div>
+
+      <div class="search-panel self-center">
+        <div class="mb-7 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-extrabold uppercase tracking-[.2em] text-emerald-700">2026</p>
+            <h2 class="mt-1 text-2xl font-extrabold text-slate-900">{{ i18n.t('nav.results') }}</h2>
+          </div>
+          <div class="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
+            <mat-icon>search</mat-icon>
+          </div>
+        </div>
+
+        <div id="exams" class="grid grid-cols-3 gap-2 rounded-2xl bg-slate-100 p-1.5">
+          <button class="exam-tab" [class.active]="selectedExam() === 'BAC'" (click)="selectExam('BAC')">
+            <span>BAC</span><small>{{ i18n.t('exam.bac') }}</small>
+          </button>
+          <button class="exam-tab" [class.active]="selectedExam() === 'BEPC'" (click)="selectExam('BEPC')">
+            <span>BEPC</span><small>{{ i18n.t('exam.bepc') }}</small>
+          </button>
+          <button class="exam-tab" [class.active]="selectedExam() === 'C1AS'" (click)="selectExam('C1AS')">
+            <span>C1AS</span><small>{{ i18n.t('exam.c1as') }}</small>
+          </button>
+        </div>
+
+        <div class="mt-3 flex justify-end">
+          <span class="availability" [class.soon]="!canSearch()">
+            {{ canSearch() ? i18n.t('exam.available') : i18n.t('exam.soon') }}
+          </span>
+        </div>
+
+        <form class="mt-5" [formGroup]="searchForm" (ngSubmit)="search()">
+          <label class="mb-2 block text-sm font-extrabold text-slate-700">{{ i18n.t('search.label') }}</label>
+          <mat-form-field appearance="outline" class="candidate-field w-full" subscriptSizing="dynamic">
+            <mat-icon matPrefix>badge</mat-icon>
+            <input matInput inputmode="numeric" autocomplete="off" formControlName="candidateNumber" [placeholder]="i18n.t('search.placeholder')">
+          </mat-form-field>
+          <p class="mt-2 text-sm text-slate-500">{{ i18n.t('search.hint') }}</p>
+          <button mat-flat-button class="search-button mt-6 w-full" type="submit" [disabled]="candidateNumber.invalid || !canSearch()">
+            <mat-icon>{{ canSearch() ? 'search' : 'schedule' }}</mat-icon>
+            {{ canSearch() ? i18n.t('search.button') : i18n.t('exam.soon') }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+    <div class="grid gap-5 md:grid-cols-3">
+      <article class="feature-card">
+        <div class="feature-icon"><mat-icon>bolt</mat-icon></div>
+        <h3>{{ i18n.t('features.fast.title') }}</h3>
+        <p>{{ i18n.t('features.fast.text') }}</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><mat-icon>translate</mat-icon></div>
+        <h3>{{ i18n.t('features.bilingual.title') }}</h3>
+        <p>{{ i18n.t('features.bilingual.text') }}</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon"><mat-icon>shield</mat-icon></div>
+        <h3>{{ i18n.t('features.secure.title') }}</h3>
+        <p>{{ i18n.t('features.secure.text') }}</p>
+      </article>
+    </div>
+  </section>
+
+  <footer class="border-t border-slate-200 bg-white px-5 py-8 text-center text-sm leading-6 text-slate-500">
+    {{ i18n.t('footer.disclaimer') }}
+  </footer>
+</main>

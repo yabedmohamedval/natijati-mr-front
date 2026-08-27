@@ -1,0 +1,18 @@
+@use '@angular/material' as mat;
+@import 'tailwindcss';
+
+html { @include mat.theme((color:(primary:mat.$green-palette,tertiary:mat.$yellow-palette),typography:Inter,density:0)); }
+:root { --page-bg:#f5f8f6;--text-main:#17231f; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0;font-family:'Inter',sans-serif;background:var(--page-bg);color:var(--text-main); }
+body.arabic-font { font-family:'Tajawal',sans-serif;letter-spacing:0; }
+button,input { font:inherit; }
+.mat-icon {
+  font-family: 'Material Symbols Outlined';
+}
+.mat-mdc-form-field-icon-prefix { padding:0 10px 0 14px !important;color:#6b827b; }
+.candidate-field .mdc-text-field--outlined { border-radius:16px !important;background:#fbfdfc; }
+.candidate-field .mat-mdc-form-field-infix { min-height:56px; }
+[dir='rtl'] .mat-icon { direction:ltr; }
+

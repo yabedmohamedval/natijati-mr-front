@@ -1,0 +1,56 @@
+<main class="result-page min-h-[calc(100vh-80px)] px-5 py-12 lg:px-8 lg:py-16">
+  <div class="mx-auto max-w-4xl">
+    <a routerLink="/" mat-button class="back-button"><mat-icon>arrow_back</mat-icon>{{ i18n.t('result.back') }}</a>
+
+    @if (loading()) {
+      <div class="state-card mt-8">
+        <div class="loader"></div>
+        <p>{{ i18n.t('result.loading') }}</p>
+      </div>
+    } @else if (result(); as value) {
+      <section class="result-card mt-8 overflow-hidden">
+        <div class="result-header">
+          <div>
+            <span class="year-badge">BAC {{ value.year }}</span>
+            <h1>{{ i18n.t('result.title') }}</h1>
+          </div>
+          <div class="verified-mark"><mat-icon>verified</mat-icon></div>
+        </div>
+
+        <div class="px-6 py-8 md:px-10 md:py-10">
+          <div class="text-center">
+            <p class="text-sm font-bold uppercase tracking-[.14em] text-slate-400">{{ i18n.t('result.candidate') }} · {{ value.identifier }}</p>
+            <h2 class="mt-4 text-3xl font-extrabold leading-tight text-slate-950 md:text-4xl">{{ primaryName() }}</h2>
+            @if (secondaryName()) { <p class="mt-2 text-xl font-semibold text-slate-500">{{ secondaryName() }}</p> }
+          </div>
+
+          <div class="score-grid mt-9">
+            <div class="score-box">
+              <span>{{ i18n.t('result.score') }}</span>
+              <strong>{{ value.score?.toFixed(2) ?? '—' }}<small>/20</small></strong>
+            </div>
+            <div class="decision-box" [class]="'decision-box ' + decisionClass(value.decisionCode)">
+              <span>{{ i18n.t('result.decision') }}</span>
+              <strong>{{ value.decisionLabel || '—' }}</strong>
+            </div>
+          </div>
+
+          <div class="details-grid mt-8">
+            <div class="detail-item"><mat-icon>category</mat-icon><div><span>{{ i18n.t('result.series') }}</span><strong>{{ display(value.seriesFr, value.seriesAr) }}</strong></div></div>
+            <div class="detail-item"><mat-icon>location_city</mat-icon><div><span>{{ i18n.t('result.wilaya') }}</span><strong>{{ display(value.wilayaFr, value.wilayaAr) }}</strong></div></div>
+            <div class="detail-item"><mat-icon>school</mat-icon><div><span>{{ i18n.t('result.institution') }}</span><strong>{{ display(value.institutionFr, value.institutionAr) }}</strong></div></div>
+            <div class="detail-item"><mat-icon>account_balance</mat-icon><div><span>{{ i18n.t('result.center') }}</span><strong>{{ display(value.examCenterFr, value.examCenterAr) }}</strong></div></div>
+          </div>
+
+          <a routerLink="/" mat-flat-button class="new-search-button mt-9 w-full"><mat-icon>search</mat-icon>{{ i18n.t('result.searchAgain') }}</a>
+        </div>
+      </section>
+    } @else {
+      <div class="state-card mt-8">
+        <div class="error-icon"><mat-icon>{{ errorType() === 'not-found' ? 'search_off' : 'error_outline' }}</mat-icon></div>
+        <h2>{{ errorType() === 'not-found' ? i18n.t('result.notFound') : i18n.t('result.error') }}</h2>
+        <a routerLink="/" mat-flat-button class="new-search-button mt-5">{{ i18n.t('result.searchAgain') }}</a>
+      </div>
+    }
+  </div>
+</main>
