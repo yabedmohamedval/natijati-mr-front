@@ -19,6 +19,7 @@ export interface ExamAvailability {
 }
 
 export interface SearchCriteria {
+  sessionType: SessionType;
   examType: ExamType;
   year: number;
   candidateNumber?: string;
@@ -31,6 +32,7 @@ export interface SearchCriteria {
 }
 
 export interface SearchResultItem {
+  sessionType: SessionType;
   examType: ExamType;
   year: number;
   identifier: string;
@@ -62,6 +64,7 @@ export interface DistributionItem {
 }
 
 export interface StatisticsResponse {
+  sessionType: SessionType;
   examType: ExamType;
   year: number;
   candidateCount: number;
@@ -76,6 +79,7 @@ export interface StatisticsResponse {
 }
 
 export interface InstitutionSummary {
+  sessionType: SessionType;
   id: string;
   examType: ExamType;
   year: number;

@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
-import { ExamType, StatisticsResponse } from '../../core/models/public-catalog.models';
+import { ExamType, SessionType, StatisticsResponse } from '../../core/models/public-catalog.models';
 import { I18nService } from '../../core/services/i18n.service';
 import { PublicCatalogApiService } from '../../core/services/public-catalog-api.service';
 
@@ -25,6 +25,7 @@ export class StatisticsComponent {
   readonly years = [2026, 2025, 2024];
 
   readonly form = new FormGroup({
+    sessionType: new FormControl<SessionType>('NORMAL', { nonNullable: true }),
     examType: new FormControl<ExamType>('BAC', { nonNullable: true }),
     year: new FormControl(2026, { nonNullable: true })
   });
@@ -32,9 +33,11 @@ export class StatisticsComponent {
   constructor() { this.load(); }
 
   load(): void {
-    const { examType, year } = this.form.getRawValue();
+    if (this.loading()) return;
+    this.stats.set(null);
+    const { examType, year, sessionType } = this.form.getRawValue();
     this.loading.set(true);
-    this.api.getStatistics(examType, year)
+    this.api.getStatistics(examType, year, sessionType)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: stats => this.stats.set(stats),

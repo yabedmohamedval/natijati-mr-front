@@ -20,6 +20,7 @@ import {
   PageResponse,
   SearchCriteria,
   SearchResultItem,
+  SessionType,
   StatisticsResponse
 } from '../models/public-catalog.models';
 
@@ -54,6 +55,7 @@ export class PublicCatalogApiService {
 
     let params = new HttpParams()
       .set('examType', criteria.examType)
+      .set('sessionType', criteria.sessionType)
       .set('year', criteria.year.toString())
       .set('page', (criteria.page ?? 0).toString())
       .set('size', (criteria.size ?? 20).toString());
@@ -80,11 +82,13 @@ export class PublicCatalogApiService {
 
   getStatistics(
     examType: string,
-    year: number
+    year: number,
+    sessionType: SessionType = 'NORMAL'
   ): Observable<StatisticsResponse> {
 
     return this.http.get<StatisticsResponse>(
-      `${this.baseUrl}/statistics/${encodeURIComponent(examType)}/${year}`
+      `${this.baseUrl}/statistics/${encodeURIComponent(examType)}/${year}`,
+      { params: { sessionType } }
     );
   }
 
@@ -93,11 +97,13 @@ export class PublicCatalogApiService {
     year: number,
     query = '',
     page = 0,
-    size = 20
+    size = 20,
+    sessionType: SessionType = 'NORMAL'
   ): Observable<PageResponse<InstitutionSummary>> {
 
     let params = new HttpParams()
       .set('examType', examType)
+      .set('sessionType', sessionType)
       .set('year', year.toString())
       .set('page', page.toString())
       .set('size', size.toString());
@@ -116,11 +122,13 @@ export class PublicCatalogApiService {
   }
 
   getInstitution(
-    id: string
+    id: string,
+    sessionType: SessionType = 'NORMAL'
   ): Observable<InstitutionDetail> {
 
     return this.http.get<InstitutionDetail>(
-      `${this.baseUrl}/institutions/${encodeURIComponent(id)}`
+      `${this.baseUrl}/institutions/${encodeURIComponent(id)}`,
+      { params: { sessionType } }
     );
   }
 }

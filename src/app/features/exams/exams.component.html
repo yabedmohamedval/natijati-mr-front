@@ -27,7 +27,7 @@
               @for (session of exam.sessions; track session.id) {
                 <a
                   [routerLink]="['/search']"
-                  [queryParams]="{ examType: exam.examType, year: session.year }"
+                  [queryParams]="{ examType: exam.examType, year: session.year, sessionType: session.sessionType }"
                   class="flex items-center justify-between rounded-2xl border border-slate-200 p-4 transition hover:border-emerald-300 hover:bg-emerald-50/50">
                   <div>
                     <p class="font-extrabold text-slate-900">{{ session.year }}</p>

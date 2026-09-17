@@ -1,13 +1,13 @@
 <main class="min-h-[calc(100vh-80px)] bg-slate-50 px-5 py-12 lg:px-8">
   <section class="mx-auto max-w-5xl">
-    <a routerLink="/institutions" mat-button><mat-icon>arrow_back</mat-icon>{{ i18n.t('result.back') }}</a>
+    <a routerLink="/institutions" [queryParams]="{ examType: detail()?.summary?.examType, year: detail()?.summary?.year, sessionType: detail()?.summary?.sessionType }" mat-button><mat-icon>arrow_back</mat-icon>{{ i18n.t('result.back') }}</a>
 
     @if (loading()) {
       <div class="grid place-items-center py-24"><mat-spinner diameter="44"></mat-spinner></div>
     } @else if (detail(); as value) {
       <div class="mt-6 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
         <header class="bg-gradient-to-r from-emerald-800 to-emerald-600 p-8 text-white">
-          <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-extrabold">{{ value.summary.examType }} {{ value.summary.year }}</span>
+          <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-extrabold">{{ value.summary.examType }} {{ value.summary.year }} · {{ i18n.t(value.summary.sessionType === 'COMPLEMENTARY' ? 'session.complementary' : 'session.normal') }}</span>
           <h1 class="mt-5 text-3xl font-extrabold md:text-4xl">{{ label(value.summary.nameFr, value.summary.nameAr) }}</h1>
           <p class="mt-2 text-emerald-100">{{ label(value.summary.wilayaFr, value.summary.wilayaAr) }}</p>
         </header>

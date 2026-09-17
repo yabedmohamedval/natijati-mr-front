@@ -3,7 +3,9 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, finalize, of } from 'rxjs';
+import { catchError, combineLatest, finalize, of, switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ExamType, SessionType } from '../../core/models/public-catalog.models';
 import { ExamResult } from '../../core/models/exam-result.model';
 import { I18nService } from '../../core/services/i18n.service';
 import { ResultsApiService } from '../../core/services/results-api.service';
@@ -32,121 +34,32 @@ export class ResultComponent {
   });
 
   constructor() {
-    console.log('[ResultComponent] Composant créé');
-
-    const yearParam =
-      this.route.snapshot.paramMap.get('year');
-
-    const candidateNumberParam =
-      this.route.snapshot.paramMap.get('candidateNumber');
-
-    console.log('[ResultComponent] Paramètre year brut :', yearParam);
-    console.log(
-      '[ResultComponent] Paramètre candidateNumber brut :',
-      candidateNumberParam
-    );
-
-    const year = Number(yearParam);
-
-    const candidateNumber =
-      candidateNumberParam ?? '';
-
-    console.log('[ResultComponent] Paramètres utilisés :', {
-      year,
-      candidateNumber
-    });
-
-    if (
-      Number.isNaN(year) ||
-      !candidateNumber.trim()
-    ) {
-      console.error(
-        '[ResultComponent] Paramètres de route invalides',
-        {
-          year,
-          candidateNumber
-        }
-      );
-
-      this.errorType.set('error');
-      this.loading.set(false);
-      return;
-    }
-
-    this.api
-      .getBacResult(year, candidateNumber)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          console.error(
-            '[ResultComponent] Erreur HTTP complète :',
-            error
-          );
-
-          console.error(
-            '[ResultComponent] Status HTTP :',
-            error.status
-          );
-
-          console.error(
-            '[ResultComponent] Status text :',
-            error.statusText
-          );
-
-          console.error(
-            '[ResultComponent] URL en erreur :',
-            error.url
-          );
-
-          console.error(
-            '[ResultComponent] Message :',
-            error.message
-          );
-
-          console.error(
-            '[ResultComponent] Corps de la réponse :',
-            error.error
-          );
-
-          this.errorType.set(
-            error.status === 404
-              ? 'not-found'
-              : 'error'
-          );
-
-          return of(null);
-        }),
-
-        finalize(() => {
-          console.log(
-            '[ResultComponent] Fin de la requête'
-          );
-
+    combineLatest([this.route.paramMap, this.route.queryParamMap]).pipe(
+      switchMap(([params, query]) => {
+        const examType = params.get('examType')?.toUpperCase();
+        const year = Number(params.get('year'));
+        const identifier = params.get('candidateNumber')?.trim() ?? '';
+        const sessionType = query.get('sessionType') ?? 'NORMAL';
+        this.result.set(null);
+        this.errorType.set(null);
+        if (!['BAC', 'BEPC', 'C1AS'].includes(examType ?? '') ||
+            !Number.isInteger(year) || year <= 0 || !identifier ||
+            !['NORMAL', 'COMPLEMENTARY'].includes(sessionType)) {
+          this.errorType.set('error');
           this.loading.set(false);
-        })
-      )
-      .subscribe({
-        next: result => {
-          console.log(
-            '[ResultComponent] Réponse reçue :',
-            result
-          );
-
-          this.result.set(result);
-        },
-
-        error: error => {
-          console.error(
-            '[ResultComponent] Erreur non interceptée :',
-            error
-          );
-        },
-
-        complete: () => {
-          console.log(
-            '[ResultComponent] Observable terminé'
-          );
+          return of(null);
         }
-      });
+        this.loading.set(true);
+        return this.api.getResult(examType as ExamType, year, identifier, sessionType as SessionType).pipe(
+          catchError((error: HttpErrorResponse) => {
+            this.errorType.set(error.status === 404 ? 'not-found' : 'error');
+            return of(null);
+          }),
+          finalize(() => this.loading.set(false))
+        );
+      }),
+      takeUntilDestroyed()
+    ).subscribe(result => this.result.set(result));
   }
 
   display(localizedFr: string | null, localizedAr: string | null): string {

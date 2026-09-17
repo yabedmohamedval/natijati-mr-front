@@ -25,7 +25,7 @@
       <div class="search-panel self-center">
         <div class="mb-7 flex items-center justify-between">
           <div>
-            <p class="text-xs font-extrabold uppercase tracking-[.2em] text-emerald-700">2026</p>
+            <p class="text-xs font-extrabold uppercase tracking-[.2em] text-emerald-700">{{ selectedSession()?.year ?? '—' }}</p>
             <h2 class="mt-1 text-2xl font-extrabold text-slate-900">{{ i18n.t('nav.results') }}</h2>
           </div>
           <div class="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
@@ -47,15 +47,23 @@
 
         <div class="mt-3 flex justify-end">
           <span class="availability" [class.soon]="!canSearch()">
-            {{ canSearch() ? i18n.t('exam.available') : i18n.t('exam.soon') }}
+            {{ catalogError() ? i18n.t('result.error') : canSearch() ? i18n.t('exam.available') : i18n.t('exam.soon') }}
           </span>
         </div>
 
         <form class="mt-5" [formGroup]="searchForm" (ngSubmit)="search()">
-          <label class="mb-2 block text-sm font-extrabold text-slate-700">{{ i18n.t('search.label') }}</label>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>{{ i18n.t('search.year') }} · {{ i18n.t('search.session') }}</mat-label>
+            <mat-select [value]="selectedSession()" (selectionChange)="selectedSession.set($event.value)">
+              @for (session of sessions(); track session.id) {
+                <mat-option [value]="session">{{ session.year }} · {{ i18n.t(session.sessionType === 'COMPLEMENTARY' ? 'session.complementary' : 'session.normal') }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <label for="candidate-number" class="mb-2 block text-sm font-extrabold text-slate-700">{{ i18n.t(selectedExam() === 'C1AS' ? 'result.dossier' : 'search.label') }}</label>
           <mat-form-field appearance="outline" class="candidate-field w-full" subscriptSizing="dynamic">
             <mat-icon matPrefix>badge</mat-icon>
-            <input matInput inputmode="numeric" autocomplete="off" formControlName="candidateNumber" [placeholder]="i18n.t('search.placeholder')">
+            <input id="candidate-number" matInput inputmode="numeric" autocomplete="off" formControlName="candidateNumber" [placeholder]="i18n.t('search.placeholder')">
           </mat-form-field>
           <p class="mt-2 text-sm text-slate-500">{{ i18n.t('search.hint') }}</p>
           <button mat-flat-button class="search-button mt-6 w-full" type="submit" [disabled]="candidateNumber.invalid || !canSearch()">

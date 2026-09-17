@@ -20,13 +20,21 @@
             @for (year of years; track year) { <mat-option [value]="year">{{ year }}</mat-option> }
           </mat-select>
         </mat-form-field>
-        <button mat-flat-button class="h-14 rounded-2xl bg-emerald-700 text-white" type="submit">{{ i18n.t('statistics.load') }}</button>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ i18n.t('search.session') }}</mat-label>
+          <mat-select formControlName="sessionType">
+            <mat-option value="NORMAL">{{ i18n.t('session.normal') }}</mat-option>
+            <mat-option value="COMPLEMENTARY">{{ i18n.t('session.complementary') }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-flat-button class="h-14 rounded-2xl bg-emerald-700 text-white" type="submit" [disabled]="loading()">{{ i18n.t('statistics.load') }}</button>
       </form>
     </div>
 
     @if (loading()) {
       <div class="grid place-items-center py-24"><mat-spinner diameter="44"></mat-spinner></div>
     } @else if (stats(); as value) {
+      <p class="mt-8 font-bold text-slate-600">{{ value.examType }} {{ value.year }} · {{ i18n.t(value.sessionType === 'COMPLEMENTARY' ? 'session.complementary' : 'session.normal') }}</p>
       <div class="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <article class="stat-card"><span>{{ i18n.t('statistics.candidates') }}</span><strong>{{ value.candidateCount }}</strong></article>
         <article class="stat-card"><span>{{ i18n.t('statistics.admitted') }}</span><strong>{{ value.admittedCount }}</strong></article>

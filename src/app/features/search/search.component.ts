@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,11 +8,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { finalize } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
 import { I18nService } from '../../core/services/i18n.service';
 import { PublicCatalogApiService } from '../../core/services/public-catalog-api.service';
 import {
   ExamType,
+  SessionType,
   PageResponse,
   SearchCriteria,
   SearchResultItem
@@ -46,6 +49,10 @@ export class SearchComponent {
   readonly examTypes: ExamType[] = ['BAC', 'BEPC', 'C1AS'];
 
   readonly form = new FormGroup({
+    sessionType: new FormControl<SessionType>('NORMAL', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(/^(NORMAL|COMPLEMENTARY)$/)]
+    }),
     examType: new FormControl<ExamType>('BAC', {
       nonNullable: true,
       validators: [Validators.required]
@@ -61,6 +68,32 @@ export class SearchComponent {
     institution: new FormControl('', { nonNullable: true })
   });
 
+  private activeSearch?: Subscription;
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.activeSearch?.unsubscribe());
+    inject(ActivatedRoute).queryParamMap.pipe(takeUntilDestroyed()).subscribe(params => {
+      this.activeSearch?.unsubscribe();
+      const examType = params.get('examType')?.toUpperCase() as ExamType;
+      const year = Number(params.get('year'));
+      const sessionType = params.get('sessionType');
+      this.form.patchValue({
+        examType: this.examTypes.includes(examType) ? examType : 'BAC',
+        year: Number.isInteger(year) && year > 0 ? year : 2026,
+        sessionType: (sessionType ?? 'NORMAL') as SessionType
+      });
+      this.response.set(null);
+      if (this.form.controls.sessionType.invalid) {
+        this.form.controls.sessionType.markAsTouched();
+        this.searched.set(true);
+        return;
+      }
+      const selectedYear = this.form.controls.year.value;
+      if (!this.years.includes(selectedYear)) this.years.push(selectedYear);
+      if (params.has('examType') || params.has('year') || params.has('sessionType')) this.search();
+    });
+  }
+
   search(page = 0, size = 20): void {
     if (this.form.invalid || this.loading()) return;
 
@@ -74,7 +107,7 @@ export class SearchComponent {
     this.loading.set(true);
     this.searched.set(true);
 
-    this.api.search(criteria)
+    this.activeSearch = this.api.search(criteria)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: response => this.response.set(response),
@@ -90,8 +123,10 @@ export class SearchComponent {
   }
 
   reset(): void {
+    this.activeSearch?.unsubscribe();
     this.form.reset({
       examType: 'BAC',
+      sessionType: 'NORMAL',
       year: 2026,
       candidateNumber: '',
       name: '',

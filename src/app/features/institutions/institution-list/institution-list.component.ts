@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
 import {
   ExamType,
+  SessionType,
   InstitutionSummary,
   PageResponse
 } from '../../../core/models/public-catalog.models';
@@ -43,20 +44,39 @@ export class InstitutionListComponent {
   readonly years = [2026, 2025, 2024];
 
   readonly form = new FormGroup({
+    sessionType: new FormControl<SessionType>('NORMAL', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(/^(NORMAL|COMPLEMENTARY)$/)]
+    }),
     examType: new FormControl<ExamType>('BAC', { nonNullable: true }),
     year: new FormControl(2026, { nonNullable: true }),
     query: new FormControl('', { nonNullable: true })
   });
 
   constructor() {
+    const params = inject(ActivatedRoute).snapshot.queryParamMap;
+    const examType = params.get('examType')?.toUpperCase() as ExamType;
+    const year = Number(params.get('year'));
+    this.form.patchValue({
+      examType: this.examTypes.includes(examType) ? examType : 'BAC',
+      year: Number.isInteger(year) && year > 0 ? year : 2026,
+      sessionType: (params.get('sessionType') ?? 'NORMAL') as SessionType
+    });
+    if (this.form.controls.sessionType.invalid) {
+      this.form.controls.sessionType.markAsTouched();
+      return;
+    }
+    if (!this.years.includes(this.form.controls.year.value)) this.years.push(this.form.controls.year.value);
     this.load();
   }
 
   load(pageIndex = 0, pageSize = 20): void {
-    const { examType, year, query } = this.form.getRawValue();
+    if (this.form.invalid || this.loading()) return;
+    this.page.set(null);
+    const { examType, year, query, sessionType } = this.form.getRawValue();
     this.loading.set(true);
 
-    this.api.getInstitutions(examType, year, query, pageIndex, pageSize)
+    this.api.getInstitutions(examType, year, query, pageIndex, pageSize, sessionType)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: page => this.page.set(page),

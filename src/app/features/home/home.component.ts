@@ -11,6 +11,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { ExamAvailability, ExamSessionView } from '../../core/models/public-catalog.models';
+import { PublicCatalogApiService } from '../../core/services/public-catalog-api.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatChipsModule } from '@angular/material/chips';
 
 import { I18nService } from '../../core/services/i18n.service';
@@ -24,7 +28,8 @@ import { I18nService } from '../../core/services/i18n.service';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSelectModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -37,7 +42,23 @@ export class HomeComponent {
   readonly selectedExam =
     signal<'BAC' | 'BEPC' | 'C1AS'>('BAC');
 
-  readonly year = signal(2026);
+  private readonly api = inject(PublicCatalogApiService);
+  readonly exams = signal<ExamAvailability[]>([]);
+  readonly selectedSession = signal<ExamSessionView | null>(null);
+  readonly catalogError = signal(false);
+  readonly sessions = computed(() =>
+    this.exams().find(exam => exam.examType === this.selectedExam())?.sessions ?? []
+  );
+
+  constructor() {
+    this.api.getExams().pipe(takeUntilDestroyed()).subscribe({
+      next: exams => {
+        this.exams.set(exams);
+        this.selectExam(this.selectedExam());
+      },
+      error: () => this.catalogError.set(true)
+    });
+  }
 
   readonly searchForm = new FormGroup({
     candidateNumber: new FormControl('', {
@@ -54,46 +75,30 @@ export class HomeComponent {
   }
 
   readonly canSearch = computed(
-    () => this.selectedExam() === 'BAC'
+    () => this.selectedSession() !== null
   );
 
   selectExam(exam: 'BAC' | 'BEPC' | 'C1AS'): void {
     this.selectedExam.set(exam);
+    const sessions = this.sessions();
+    const latestYear = Math.max(...sessions.map(session => session.year));
+    this.selectedSession.set(
+      sessions.find(session => session.year === latestYear && session.sessionType === 'NORMAL')
+      ?? sessions.find(session => session.year === latestYear)
+      ?? null
+    );
   }
 
   search(): void {
-    console.log('search() appelée');
-    console.log('Valeur :', this.candidateNumber.value);
-    console.log('Valide :', this.candidateNumber.valid);
-    console.log('Examen :', this.selectedExam());
-    console.log('Recherche autorisée :', this.canSearch());
-
     this.searchForm.markAllAsTouched();
-
-    if (
-      this.searchForm.invalid ||
-      !this.canSearch()
-    ) {
-      return;
-    }
-
-    const candidateNumber =
-      this.candidateNumber.value.trim();
+    const session = this.selectedSession();
+    if (this.searchForm.invalid || !session) return;
 
     void this.router.navigate([
-      '/result/bac',
-      this.year(),
-      candidateNumber
-    ]).then(navigationSucceeded => {
-      console.log(
-        'Navigation réussie :',
-        navigationSucceeded
-      );
-    }).catch(error => {
-      console.error(
-        'Erreur de navigation :',
-        error
-      );
-    });
+      '/result',
+      this.selectedExam().toLowerCase(),
+      session.year,
+      this.candidateNumber.value.trim()
+    ], { queryParams: { sessionType: session.sessionType } });
   }
 }
