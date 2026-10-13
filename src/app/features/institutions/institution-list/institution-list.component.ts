@@ -38,6 +38,7 @@ export class InstitutionListComponent {
   readonly i18n = inject(I18nService);
   private readonly api = inject(PublicCatalogApiService);
 
+  readonly loadError = signal(false);
   readonly loading = signal(false);
   readonly page = signal<PageResponse<InstitutionSummary> | null>(null);
   readonly examTypes: ExamType[] = ['BAC', 'BEPC', 'C1AS'];
@@ -74,13 +75,14 @@ export class InstitutionListComponent {
     if (this.form.invalid || this.loading()) return;
     this.page.set(null);
     const { examType, year, query, sessionType } = this.form.getRawValue();
+    this.loadError.set(false);
     this.loading.set(true);
 
     this.api.getInstitutions(examType, year, query, pageIndex, pageSize, sessionType)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: page => this.page.set(page),
-        error: error => console.error('[Institutions] Erreur', error)
+        error: () => this.loadError.set(true)
       });
   }
 

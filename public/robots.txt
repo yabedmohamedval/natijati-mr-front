@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sensitive pages use X-Robots-Tag; crawling must remain allowed to read noindex.
+Sitemap: https://natijati-mr.online/sitemap.xml

@@ -5,20 +5,30 @@
     {
       "name": "app",
       "installMode": "prefetch",
-      "resources": { "files": ["/favicon.ico", "/index.html", "/*.css", "/*.js", "/manifest.webmanifest"] }
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/*.css",
+          "/*.js",
+          "/manifest.webmanifest",
+          "!/natijati-worker.js"
+        ]
+      }
     },
     {
       "name": "assets",
       "installMode": "lazy",
       "updateMode": "prefetch",
-      "resources": { "files": ["/icons/**", "/*.(svg|png|jpg|jpeg|webp|woff2)"] }
+      "resources": {
+        "files": [
+          "/icons/**",
+          "/images/**",
+          "/media/*.woff2",
+          "/*.(svg|png|jpg|jpeg|webp|woff2)"
+        ]
+      }
     }
   ],
-  "dataGroups": [
-    {
-      "name": "published-results",
-      "urls": ["/api/public/results/**"],
-      "cacheConfig": { "strategy": "freshness", "maxSize": 100, "maxAge": "1h", "timeout": "4s" }
-    }
-  ]
+  "dataGroups": []
 }

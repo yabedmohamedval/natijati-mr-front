@@ -19,6 +19,7 @@ import { PublicCatalogApiService } from '../../core/services/public-catalog-api.
 export class StatisticsComponent {
   readonly i18n = inject(I18nService);
   private readonly api = inject(PublicCatalogApiService);
+  readonly loadError = signal(false);
   readonly loading = signal(false);
   readonly stats = signal<StatisticsResponse | null>(null);
   readonly examTypes: ExamType[] = ['BAC', 'BEPC', 'C1AS'];
@@ -36,12 +37,13 @@ export class StatisticsComponent {
     if (this.loading()) return;
     this.stats.set(null);
     const { examType, year, sessionType } = this.form.getRawValue();
+    this.loadError.set(false);
     this.loading.set(true);
     this.api.getStatistics(examType, year, sessionType)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: stats => this.stats.set(stats),
-        error: error => console.error('[Statistics] Erreur', error)
+        error: () => this.loadError.set(true)
       });
   }
 

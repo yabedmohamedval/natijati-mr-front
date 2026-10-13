@@ -1,13 +1,14 @@
-<main class="result-page min-h-[calc(100vh-80px)] px-5 py-12 lg:px-8 lg:py-16">
+<main id="main-content" tabindex="-1" class="result-page min-h-[calc(100vh-80px)] px-5 py-12 lg:px-8 lg:py-16">
   <div class="mx-auto max-w-4xl">
-    <a routerLink="/" mat-button class="back-button"><mat-icon>arrow_back</mat-icon>{{ i18n.t('result.back') }}</a>
+    <a routerLink="/" mat-button class="back-button"><mat-icon class="mat-icon-rtl-mirror">arrow_back</mat-icon>{{ i18n.t('result.back') }}</a>
 
     @if (loading()) {
-      <div class="state-card mt-8">
-        <div class="loader"></div>
+      <div class="state-card mt-8" role="status">
+        <h1 class="sr-only">{{ i18n.t('result.title') }}</h1><div class="loader" aria-hidden="true"></div>
         <p>{{ i18n.t('result.loading') }}</p>
       </div>
     } @else if (result(); as value) {
+      <p role="status" class="sr-only">{{ i18n.t('a11y.loaded') }}</p>
       <section class="result-card mt-8 overflow-hidden">
         <div class="result-header">
           <div>
@@ -19,7 +20,7 @@
 
         <div class="px-6 py-8 md:px-10 md:py-10">
           <div class="text-center">
-            <p class="text-sm font-bold uppercase tracking-[.14em] text-slate-400">{{ i18n.t(value.examType === 'C1AS' ? 'result.dossier' : 'result.candidate') }} · {{ value.identifier }}</p>
+            <p class="text-sm font-bold uppercase tracking-[.14em] text-slate-600">{{ i18n.t(value.examType === 'C1AS' ? 'result.dossier' : 'result.candidate') }} · <bdi>{{ value.identifier }}</bdi></p>
             <h2 class="mt-4 text-3xl font-extrabold leading-tight text-slate-950 md:text-4xl">{{ primaryName() }}</h2>
             @if (secondaryName()) { <p class="mt-2 text-xl font-semibold text-slate-500">{{ secondaryName() }}</p> }
           </div>
@@ -27,7 +28,7 @@
           <div class="score-grid mt-9">
             <div class="score-box">
               <span>{{ i18n.t(value.examType === 'C1AS' ? 'result.total' : 'result.score') }}</span>
-              <strong>{{ value.score?.toFixed(2) ?? '—' }}@if (value.examType !== 'C1AS') { <small>/20</small> }</strong>
+              <strong dir="ltr">{{ value.score?.toFixed(2) ?? '—' }}@if (value.examType !== 'C1AS') { <small>/20</small> }</strong>
             </div>
             <div class="decision-box" [class]="'decision-box ' + decisionClass(value.decisionCode)">
               <span>{{ i18n.t('result.decision') }}</span>
@@ -46,7 +47,7 @@
         </div>
       </section>
     } @else {
-      <div class="state-card mt-8">
+      <div class="state-card mt-8" role="alert"><h1 class="sr-only">{{ i18n.t('result.title') }}</h1>
         <div class="error-icon"><mat-icon>{{ errorType() === 'not-found' ? 'search_off' : 'error_outline' }}</mat-icon></div>
         <h2>{{ errorType() === 'not-found' ? i18n.t('result.notFound') : i18n.t('result.error') }}</h2>
         <a routerLink="/" mat-flat-button class="new-search-button mt-5">{{ i18n.t('result.searchAgain') }}</a>

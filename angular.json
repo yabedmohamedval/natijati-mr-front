@@ -21,8 +21,13 @@
             "polyfills": ["zone.js", "@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [{ "glob": "**/*", "input": "public" }],
-            "styles": ["src/styles.scss"],
+            "assets": [
+              { "glob": "**/*", "input": "public", "ignore": ["images/logo.png"] },
+              { "glob": "LICENSE", "input": "node_modules/@fontsource-variable/inter", "output": "licenses/inter" },
+              { "glob": "LICENSE", "input": "node_modules/@fontsource/tajawal", "output": "licenses/tajawal" },
+              { "glob": "LICENSE", "input": "node_modules/@fontsource/material-symbols-outlined", "output": "licenses/material-symbols-outlined" }
+            ],
+            "styles": ["src/tailwind.css", "src/fonts.css", "src/styles.scss"],
             "serviceWorker": "ngsw-config.json"
           },
           "configurations": {
@@ -31,7 +36,8 @@
                 { "type": "initial", "maximumWarning": "1MB", "maximumError": "2MB" },
                 { "type": "anyComponentStyle", "maximumWarning": "8kB", "maximumError": "16kB" }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": { "scripts": true, "styles": true, "fonts": false }
             },
             "development": {
               "fileReplacements": [
@@ -65,10 +71,18 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "polyfills": ["zone.js", "zone.js/testing"],
+            "builderMode": "application",
+            "karmaConfig": "karma.conf.cjs",
+            "browsers": "ChromeHeadless",
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": [{ "glob": "**/*", "input": "public" }],
-            "styles": ["src/styles.scss"]
+            "assets": [
+              { "glob": "**/*", "input": "public", "ignore": ["images/logo.png"] },
+              { "glob": "LICENSE", "input": "node_modules/@fontsource-variable/inter", "output": "licenses/inter" },
+              { "glob": "LICENSE", "input": "node_modules/@fontsource/tajawal", "output": "licenses/tajawal" },
+              { "glob": "LICENSE", "input": "node_modules/@fontsource/material-symbols-outlined", "output": "licenses/material-symbols-outlined" }
+            ],
+            "styles": ["src/tailwind.css", "src/fonts.css", "src/styles.scss"]
           }
         }
       }

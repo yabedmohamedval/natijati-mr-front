@@ -1,5 +1,4 @@
 @use '@angular/material' as mat;
-@import 'tailwindcss';
 
 html { @include mat.theme((color:(primary:mat.$green-palette,tertiary:mat.$yellow-palette),typography:Inter,density:0)); }
 :root { --page-bg:#f5f8f6;--text-main:#17231f; }
@@ -10,9 +9,43 @@ body.arabic-font { font-family:'Tajawal',sans-serif;letter-spacing:0; }
 button,input { font:inherit; }
 .mat-icon {
   font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
 }
 .mat-mdc-form-field-icon-prefix { padding:0 10px 0 14px !important;color:#6b827b; }
 .candidate-field .mdc-text-field--outlined { border-radius:16px !important;background:#fbfdfc; }
 .candidate-field .mat-mdc-form-field-infix { min-height:56px; }
 [dir='rtl'] .mat-icon { direction:ltr; }
 
+
+/* Keyboard access, long bilingual content and reduced motion. */
+.skip-link { position: fixed; inset-block-start: 8px; inset-inline-start: 8px; z-index: 10000; padding: 12px; background: white; color: #065f46; transform: translateY(-200%); }
+.skip-link:focus { transform: none; }
+:where(a, button, input, select, textarea, [tabindex]):focus-visible { outline: 3px solid #006b55; outline-offset: 3px; }
+main { scroll-margin-block-start: 90px; overflow-wrap: anywhere; }
+main :where(.grid, .flex) > * { min-width: 0; }
+mat-form-field { min-width: 0; max-width: 100%; }
+.mat-mdc-paginator-container, .mat-mdc-paginator-range-actions { flex-wrap: wrap; }
+.mat-mdc-paginator-range-label { margin-inline: 8px !important; }
+.mat-mdc-form-field-icon-prefix { padding-inline: 14px 10px !important; }
+@media (max-width: 480px) {
+  main h1 { font-size: 2rem; }
+  .mat-mdc-paginator-container { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* These existing statistics cards previously had no style definition. */
+.stat-card { display: flex; flex-direction: column; gap: .75rem; padding: 1.25rem; border: 1px solid #e2e8f0; border-radius: 1.25rem; background: white; }
+.stat-card span { color: #475569; font-size: .875rem; }
+.stat-card strong { color: #065f46; font-size: 1.75rem; direction: ltr; unicode-bidi: isolate; text-align: start; }

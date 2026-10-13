@@ -59,3 +59,5 @@
 
 .empty-state mat-icon { width: 42px; height: 42px; font-size: 42px; }
 .empty-state h3 { font-size: 1.1rem; font-weight: 800; }
+
+@media(max-width:640px) { .result-row { flex-direction: column; align-items: stretch; } }

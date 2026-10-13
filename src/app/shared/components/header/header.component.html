@@ -8,7 +8,7 @@
     <a
       routerLink="/"
       class="flex items-center gap-3 no-underline"
-      aria-label="Natijati MR - Accueil"
+      [attr.aria-label]="'Natijati MR — ' + i18n.t('nav.home')"
     >
       <div class="brand-mark">
         ن
@@ -25,7 +25,7 @@
         </div>
 
         <div
-          class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400"
+          class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600"
         >
           {{ i18n.t('brand.subtitle') }}
         </div>
@@ -35,11 +35,11 @@
     <!-- Navigation desktop -->
     <nav
       class="hidden items-center gap-6 lg:flex"
-      aria-label="Navigation principale"
+      [attr.aria-label]="i18n.t('a11y.navigation')"
     >
       <a
         routerLink="/"
-        routerLinkActive="active"
+        routerLinkActive="active" ariaCurrentWhenActive="page"
         [routerLinkActiveOptions]="{ exact: true }"
         class="nav-link"
       >
@@ -48,7 +48,7 @@
 
       <a
         routerLink="/exams"
-        routerLinkActive="active"
+        routerLinkActive="active" ariaCurrentWhenActive="page"
         class="nav-link"
       >
         {{ i18n.t('nav.exams') }}
@@ -56,7 +56,7 @@
 
       <a
         routerLink="/search"
-        routerLinkActive="active"
+        routerLinkActive="active" ariaCurrentWhenActive="page"
         class="nav-link"
       >
         {{ i18n.t('nav.advancedSearch') }}
@@ -64,7 +64,7 @@
 
       <a
         routerLink="/statistics"
-        routerLinkActive="active"
+        routerLinkActive="active" ariaCurrentWhenActive="page"
         class="nav-link"
       >
         {{ i18n.t('nav.statistics') }}
@@ -72,7 +72,7 @@
 
       <a
         routerLink="/institutions"
-        routerLinkActive="active"
+        routerLinkActive="active" ariaCurrentWhenActive="page"
         class="nav-link"
       >
         {{ i18n.t('nav.institutions') }}
@@ -80,7 +80,7 @@
 
       <a
         routerLink="/about"
-        routerLinkActive="active"
+        routerLinkActive="active" ariaCurrentWhenActive="page"
         class="nav-link"
       >
         {{ i18n.t('nav.about') }}
@@ -95,6 +95,7 @@
         type="button"
         class="language-button"
         (click)="i18n.toggleLanguage()"
+        [attr.aria-label]="i18n.isArabic() ? i18n.t('language.fr') : i18n.t('language.ar')"
       >
         <mat-icon>language</mat-icon>
 
@@ -128,6 +129,7 @@
 >
   <a
     mat-menu-item
+    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
     routerLink="/"
   >
     <mat-icon>home</mat-icon>
@@ -136,6 +138,7 @@
 
   <a
     mat-menu-item
+    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
     routerLink="/exams"
   >
     <mat-icon>school</mat-icon>
@@ -144,6 +147,7 @@
 
   <a
     mat-menu-item
+    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
     routerLink="/search"
   >
     <mat-icon>manage_search</mat-icon>
@@ -152,6 +156,7 @@
 
   <a
     mat-menu-item
+    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
     routerLink="/statistics"
   >
     <mat-icon>bar_chart</mat-icon>
@@ -160,6 +165,7 @@
 
   <a
     mat-menu-item
+    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
     routerLink="/institutions"
   >
     <mat-icon>account_balance</mat-icon>
@@ -168,6 +174,7 @@
 
   <a
     mat-menu-item
+    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
     routerLink="/about"
   >
     <mat-icon>info</mat-icon>

@@ -8,6 +8,26 @@ import {
 export type AppLanguage = 'fr' | 'ar';
 
 const frTranslations = {
+  "a11y.skip": "Aller au contenu",
+  "a11y.navigation": "Navigation principale",
+  "a11y.loading": "Chargement…",
+  "a11y.loaded": "Contenu chargé.",
+  "a11y.empty": "Aucune donnée disponible pour ces critères.",
+  "a11y.numberRequired": "Saisissez le numéro du candidat ou du dossier.",
+  "pagination.items": "Éléments par page",
+  "pagination.next": "Page suivante",
+  "pagination.previous": "Page précédente",
+  "pagination.first": "Première page",
+  "pagination.last": "Dernière page",
+  "pagination.of": "sur",
+  "seo.home": "Résultats des examens nationaux",
+  "seo.description": "Consultez les résultats, archives et statistiques des examens nationaux en Mauritanie.",
+  "seo.institution": "Détail de l’établissement",
+
+  'pwa.ready': 'Une nouvelle version est prête.',
+  'pwa.reload': 'Recharger',
+  'pwa.unrecoverable': 'Cette version ne peut plus fonctionner correctement. Reconnectez-vous puis rechargez.',
+  'pwa.offline': 'Hors ligne : les résultats et les recherches nécessitent une connexion Internet.',
   // Marque et navigation
   'brand.subtitle': 'Examens nationaux',
 
@@ -182,7 +202,27 @@ const frTranslations = {
 export type TranslationKey = keyof typeof frTranslations;
 
 const arTranslations: Record<TranslationKey, string> = {
+  "a11y.skip": "الانتقال إلى المحتوى",
+  "a11y.navigation": "التنقل الرئيسي",
+  "a11y.loading": "جارٍ التحميل…",
+  "a11y.loaded": "تم تحميل المحتوى.",
+  "a11y.empty": "لا توجد بيانات مطابقة لهذه المعايير.",
+  "a11y.numberRequired": "أدخل رقم المترشح أو الملف.",
+  "pagination.items": "عدد العناصر في الصفحة",
+  "pagination.next": "الصفحة التالية",
+  "pagination.previous": "الصفحة السابقة",
+  "pagination.first": "الصفحة الأولى",
+  "pagination.last": "الصفحة الأخيرة",
+  "pagination.of": "من",
+  "seo.home": "نتائج الامتحانات الوطنية",
+  "seo.description": "اطلع على نتائج وأرشيف وإحصاءات الامتحانات الوطنية في موريتانيا.",
+  "seo.institution": "تفاصيل المؤسسة",
+
   // Marque et navigation
+  'pwa.ready': 'نسخة جديدة جاهزة.',
+  'pwa.reload': 'إعادة التحميل',
+  'pwa.unrecoverable': 'تعذر تشغيل هذه النسخة. اتصل بالإنترنت ثم أعد التحميل.',
+  'pwa.offline': 'أنت غير متصل: تتطلب النتائج والبحث اتصالاً بالإنترنت.',
   'brand.subtitle': 'الامتحانات الوطنية',
 
   'nav.home': 'الرئيسية',

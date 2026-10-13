@@ -22,6 +22,7 @@ export type SessionType =
 export class ExamsComponent {
   readonly i18n = inject(I18nService);
   private readonly api = inject(PublicCatalogApiService);
+  readonly loadError = signal(false);
   readonly loading = signal(true);
   readonly exams = signal<ExamAvailability[]>([]);
 
@@ -30,7 +31,7 @@ export class ExamsComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: exams => this.exams.set(exams),
-        error: error => console.error('[Exams] Erreur', error)
+        error: () => this.loadError.set(true)
       });
   }
 

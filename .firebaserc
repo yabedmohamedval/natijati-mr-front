@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "natijati-mr",
-    "production": "natijati-mr"
+    "default": "natijati-mr-3232f",
+    "production": "natijati-mr-3232f"
   },
   "targets": {},
   "etags": {}
