@@ -1,0 +1,77 @@
+name: Frontend production
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-frontend
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  deploy:
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://natijati-mr.online
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Validate deployment destination
+        env:
+          WIF_PROVIDER: ${{ vars.FIREBASE_WORKLOAD_IDENTITY_PROVIDER }}
+          DEPLOY_ACCOUNT: ${{ vars.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          set -euo pipefail
+          test "$FIREBASE_PROJECT_ID" = natijati-mr-3232f
+          test -n "$WIF_PROVIDER"
+          [[ "$DEPLOY_ACCOUNT" == *@natijati-mr-3232f.iam.gserviceaccount.com ]]
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:pwa
+      - run: node .github/scripts/check-production.mjs
+      - name: Install pinned Firebase CLI outside application dependencies
+        run: npm install --prefix "$RUNNER_TEMP/firebase-cli" --no-audit --no-fund firebase-tools@15.34.0
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          project_id: ${{ env.FIREBASE_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.FIREBASE_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.FIREBASE_SERVICE_ACCOUNT }}
+          create_credentials_file: true
+          export_environment_variables: true
+      - name: Deploy Hosting only using ephemeral ADC
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/firebase-cli/node_modules/.bin/firebase" deploy --only hosting --project="$FIREBASE_PROJECT_ID" --non-interactive --message="Git SHA $GITHUB_SHA"
+      - name: Check public site and deployed service-worker manifest
+        run: |
+          set -euo pipefail
+          SITE=https://natijati-mr.online
+          STATUS=$(curl --silent --show-error --fail-with-body --retry 5 --retry-delay 3 --retry-max-time 90 --connect-timeout 10 --max-time 20 --output "$RUNNER_TEMP/site.html" --write-out '%{http_code}' "$SITE/?deployment=$GITHUB_SHA")
+          test "$STATUS" = 200
+          grep -q '<app-root' "$RUNNER_TEMP/site.html"
+          curl --fail --silent --show-error --retry 5 --connect-timeout 10 --max-time 20 "$SITE/ngsw.json?deployment=$GITHUB_SHA" --output "$RUNNER_TEMP/deployed-ngsw.json"
+          cmp dist/national-exams-frontend/browser/ngsw.json "$RUNNER_TEMP/deployed-ngsw.json"
+          echo "Frontend deployed from commit $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"

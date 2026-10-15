@@ -1,0 +1,38 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Frontend validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Locate runner Chrome
+        run: |
+          set -euo pipefail
+          echo "CHROME_BIN=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          google-chrome --version
+      - run: npm run test:ci
+      - run: npm run test:business
+      - run: npm run build
+      - run: npm run test:pwa
+      - name: Check production API and PWA output
+        run: node .github/scripts/check-production.mjs
+      - run: npm audit --omit=dev
