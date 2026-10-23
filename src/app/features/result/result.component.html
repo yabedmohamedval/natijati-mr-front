@@ -1,57 +1,45 @@
-<main id="main-content" tabindex="-1" class="result-page min-h-[calc(100vh-80px)] px-5 py-12 lg:px-8 lg:py-16">
-  <div class="mx-auto max-w-4xl">
+<main id="main-content" tabindex="-1" class="ui-page">
+  <div class="ui-container ui-container--result">
     <a routerLink="/" mat-button class="back-button"><mat-icon class="mat-icon-rtl-mirror">arrow_back</mat-icon>{{ i18n.t('result.back') }}</a>
-
     @if (loading()) {
-      <div class="state-card mt-8" role="status">
-        <h1 class="sr-only">{{ i18n.t('result.title') }}</h1><div class="loader" aria-hidden="true"></div>
-        <p>{{ i18n.t('result.loading') }}</p>
-      </div>
+      <h1 class="state-title ui-page-title">{{ i18n.t('result.title') }}</h1>
+      <app-ui-state class="mt-8" kind="loading" [message]="i18n.t('result.loading')" />
     } @else if (result(); as value) {
       <p role="status" class="sr-only">{{ i18n.t('a11y.loaded') }}</p>
-      <section class="result-card mt-8 overflow-hidden">
-        <div class="result-header">
-          <div>
-            <span class="year-badge">{{ value.examType }} {{ value.year }} · {{ i18n.t(value.sessionType === 'COMPLEMENTARY' ? 'session.complementary' : 'session.normal') }}</span>
-            <h1>{{ i18n.t('result.title') }}</h1>
+      <section class="ui-card result-card" aria-labelledby="result-title">
+        <header class="result-header">
+          <div><span class="exam-badge"><bdi>{{ value.examType }} {{ value.year }}</bdi>@if (value.sessionType) { · {{ i18n.t(value.sessionType === 'COMPLEMENTARY' ? 'session.complementary' : 'session.normal') }} }</span><h1 id="result-title">{{ i18n.t('result.title') }}</h1></div>
+          <span class="document-mark" aria-hidden="true"><mat-icon>description</mat-icon></span>
+        </header>
+        <div class="result-body">
+          <div class="candidate-identity">
+            <p class="identifier">{{ i18n.t(value.examType === 'C1AS' ? 'result.dossier' : 'result.candidate') }} <bdi>#{{ value.identifier }}</bdi></p>
+            <h2 dir="auto">{{ primaryName() }}</h2>
+            @if (secondaryName() && secondaryName() !== primaryName()) { <p class="secondary-name" dir="auto">{{ secondaryName() }}</p> }
           </div>
-          <div class="verified-mark"><mat-icon>verified</mat-icon></div>
-        </div>
-
-        <div class="px-6 py-8 md:px-10 md:py-10">
-          <div class="text-center">
-            <p class="text-sm font-bold uppercase tracking-[.14em] text-slate-600">{{ i18n.t(value.examType === 'C1AS' ? 'result.dossier' : 'result.candidate') }} · <bdi>{{ value.identifier }}</bdi></p>
-            <h2 class="mt-4 text-3xl font-extrabold leading-tight text-slate-950 md:text-4xl">{{ primaryName() }}</h2>
-            @if (secondaryName()) { <p class="mt-2 text-xl font-semibold text-slate-500">{{ secondaryName() }}</p> }
-          </div>
-
-          <div class="score-grid mt-9">
+          <div class="score-grid" [class.score-grid--single]="!value.decisionLabel">
             <div class="score-box">
-              <span>{{ i18n.t(value.examType === 'C1AS' ? 'result.total' : 'result.score') }}</span>
-              <strong dir="ltr">{{ value.score?.toFixed(2) ?? '—' }}@if (value.examType !== 'C1AS') { <small>/20</small> }</strong>
+              <span class="metric-label"><mat-icon>bar_chart</mat-icon>{{ i18n.t(value.examType === 'C1AS' ? 'result.total' : 'result.score') }}</span>
+              <strong dir="ltr">{{ value.score?.toFixed(2) ?? '—' }}@if (value.examType !== 'C1AS' && value.score != null) { <small>/ 20</small> }</strong>
             </div>
-            <div class="decision-box" [class]="'decision-box ' + decisionClass(value.decisionCode)">
-              <span>{{ i18n.t('result.decision') }}</span>
-              <strong>{{ value.decisionLabel || '—' }}</strong>
-            </div>
+            @if (value.decisionLabel) {
+              <div [class]="'decision-box ' + decisionClass(value.decisionCode)"><span class="metric-label"><mat-icon>assignment</mat-icon>{{ i18n.t('result.decision') }}</span><strong>{{ value.decisionLabel }}</strong></div>
+            }
           </div>
-
-          <div class="details-grid mt-8">
-            <div class="detail-item"><mat-icon>category</mat-icon><div><span>{{ i18n.t('result.series') }}</span><strong>{{ display(value.seriesFr, value.seriesAr) }}</strong></div></div>
-            <div class="detail-item"><mat-icon>location_city</mat-icon><div><span>{{ i18n.t('result.wilaya') }}</span><strong>{{ display(value.wilayaFr, value.wilayaAr) }}</strong></div></div>
-            <div class="detail-item"><mat-icon>school</mat-icon><div><span>{{ i18n.t('result.institution') }}</span><strong>{{ display(value.institutionFr, value.institutionAr) }}</strong></div></div>
-            <div class="detail-item"><mat-icon>account_balance</mat-icon><div><span>{{ i18n.t('result.center') }}</span><strong>{{ display(value.examCenterFr, value.examCenterAr) }}</strong></div></div>
-          </div>
-
-          <a routerLink="/" mat-flat-button class="new-search-button mt-9 w-full"><mat-icon>search</mat-icon>{{ i18n.t('result.searchAgain') }}</a>
+          <dl class="details-grid">
+            <div class="detail-item"><mat-icon>school</mat-icon><div><dt>{{ i18n.t('result.institution') }}</dt><dd>{{ display(value.institutionFr, value.institutionAr) }}</dd></div></div>
+            <div class="detail-item"><mat-icon>location_on</mat-icon><div><dt>{{ i18n.t('result.wilaya') }}</dt><dd>{{ display(value.wilayaFr, value.wilayaAr) }}</dd></div></div>
+            @if (value.seriesFr || value.seriesAr) { <div class="detail-item"><mat-icon>category</mat-icon><div><dt>{{ i18n.t('result.series') }}</dt><dd>{{ display(value.seriesFr, value.seriesAr) }}</dd></div></div> }
+            @if (value.examCenterFr || value.examCenterAr) { <div class="detail-item"><mat-icon>account_balance</mat-icon><div><dt>{{ i18n.t('result.center') }}</dt><dd>{{ display(value.examCenterFr, value.examCenterAr) }}</dd></div></div> }
+          </dl>
+          <div class="result-actions"><a routerLink="/" mat-flat-button><mat-icon>search</mat-icon>{{ i18n.t('result.searchAgain') }}</a><span dir="ltr">Natijati MR</span></div>
         </div>
       </section>
     } @else {
-      <div class="state-card mt-8" role="alert"><h1 class="sr-only">{{ i18n.t('result.title') }}</h1>
-        <div class="error-icon"><mat-icon>{{ errorType() === 'not-found' ? 'search_off' : 'error_outline' }}</mat-icon></div>
-        <h2>{{ errorType() === 'not-found' ? i18n.t('result.notFound') : i18n.t('result.error') }}</h2>
-        <a routerLink="/" mat-flat-button class="new-search-button mt-5">{{ i18n.t('result.searchAgain') }}</a>
-      </div>
+      <h1 class="state-title ui-page-title">{{ i18n.t('result.title') }}</h1>
+      <app-ui-state class="mt-8" [kind]="errorType() === 'not-found' ? 'empty' : 'error'" [message]="errorType() === 'not-found' ? i18n.t('result.notFound') : i18n.t('result.error')">
+        <a routerLink="/" mat-flat-button>{{ i18n.t('result.searchAgain') }}</a>
+      </app-ui-state>
     }
   </div>
 </main>

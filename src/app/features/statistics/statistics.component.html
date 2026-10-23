@@ -1,78 +1,40 @@
-<main id="main-content" tabindex="-1" class="min-h-[calc(100vh-80px)] bg-slate-50 px-5 py-12 lg:px-8">
+<main id="main-content" tabindex="-1" class="ui-page">
   <p role="status" class="sr-only">{{ loading() ? i18n.t('a11y.loading') : i18n.t('a11y.loaded') }}</p>
-  <section class="mx-auto max-w-7xl">
-    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-      <div>
-        <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-extrabold text-emerald-700"><mat-icon>monitoring</mat-icon>{{ i18n.t('statistics.badge') }}</span>
-        <h1 class="mt-5 text-4xl font-extrabold text-slate-950 md:text-5xl">{{ i18n.t('statistics.title') }}</h1>
-        <p class="mt-4 max-w-3xl text-lg text-slate-600">{{ i18n.t('statistics.description') }}</p>
-      </div>
-
-      <form [formGroup]="form" (ngSubmit)="load()" class="flex flex-wrap gap-3">
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>{{ i18n.t('advanced.exam') }}</mat-label>
-          <mat-select formControlName="examType">
-            @for (exam of examTypes; track exam) { <mat-option [value]="exam">{{ exam }}</mat-option> }
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>{{ i18n.t('search.year') }}</mat-label>
-          <mat-select formControlName="year">
-            @for (year of years; track year) { <mat-option [value]="year">{{ year }}</mat-option> }
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-          <mat-label>{{ i18n.t('search.session') }}</mat-label>
-          <mat-select formControlName="sessionType">
-            <mat-option value="NORMAL">{{ i18n.t('session.normal') }}</mat-option>
-            <mat-option value="COMPLEMENTARY">{{ i18n.t('session.complementary') }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <button mat-flat-button class="h-14 rounded-2xl bg-emerald-700 text-white" type="submit" [disabled]="loading()">{{ i18n.t('statistics.load') }}</button>
-      </form>
-    </div>
-
-    @if (loadError()) {
-      <p role="alert" class="mt-6 text-red-800">{{ i18n.t('result.error') }}</p>
-    }
+  <section class="ui-container">
+    <header class="dashboard-heading"><span class="ui-badge"><mat-icon>monitoring</mat-icon>{{ i18n.t('statistics.badge') }}</span><h1 class="ui-page-title">{{ i18n.t('statistics.title') }}</h1><p class="ui-page-description">{{ i18n.t('statistics.description') }}</p></header>
+    <form [formGroup]="form" (ngSubmit)="load()" class="ui-card dashboard-filters">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>{{ i18n.t('advanced.exam') }}</mat-label><mat-icon matPrefix>school</mat-icon><mat-select formControlName="examType">@for (exam of examTypes; track exam) { <mat-option [value]="exam">{{ exam }}</mat-option> }</mat-select></mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>{{ i18n.t('search.year') }}</mat-label><mat-icon matPrefix>calendar_month</mat-icon><mat-select formControlName="year">@for (year of years; track year) { <mat-option [value]="year">{{ year }}</mat-option> }</mat-select></mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic"><mat-label>{{ i18n.t('search.session') }}</mat-label><mat-select formControlName="sessionType"><mat-option value="NORMAL">{{ i18n.t('session.normal') }}</mat-option><mat-option value="COMPLEMENTARY">{{ i18n.t('session.complementary') }}</mat-option></mat-select></mat-form-field>
+      <button mat-flat-button type="submit" [disabled]="loading()"><mat-icon>tune</mat-icon>{{ i18n.t('statistics.load') }}</button>
+    </form>
+    @if (loadError()) { <app-ui-state class="mt-6" kind="error" [message]="i18n.t('result.error')" /> }
     @if (loading()) {
-      <div class="grid place-items-center py-24"><mat-spinner diameter="44" [attr.aria-label]="i18n.t('a11y.loading')"></mat-spinner></div>
+      <app-ui-state class="mt-8" kind="loading" [announce]="false" [message]="i18n.t('a11y.loading')" />
     } @else if (stats(); as value) {
-      @if (!value.candidateCount) { <p role="status" class="mt-6">{{ i18n.t('a11y.empty') }}</p> }
-      <p class="mt-8 font-bold text-slate-600">{{ value.examType }} {{ value.year }} · {{ i18n.t(value.sessionType === 'COMPLEMENTARY' ? 'session.complementary' : 'session.normal') }}</p>
-      <div class="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <article class="stat-card"><span>{{ i18n.t('statistics.candidates') }}</span><strong>{{ value.candidateCount }}</strong></article>
-        <article class="stat-card"><span>{{ i18n.t('statistics.admitted') }}</span><strong>{{ value.admittedCount }}</strong></article>
-        <article class="stat-card"><span>{{ i18n.t('statistics.successRate') }}</span><strong>{{ value.successRate.toFixed(2) }}%</strong></article>
-        <article class="stat-card"><span>{{ i18n.t('statistics.average') }}</span><strong>{{ value.averageScore?.toFixed(2) ?? '—' }}</strong></article>
-        <article class="stat-card"><span>{{ i18n.t('statistics.secondSession') }}</span><strong>{{ value.secondSessionCount }}</strong></article>
+      <div class="dashboard-context"><h2>{{ i18n.t('nav.results') }}</h2><span class="exam-badge"><bdi>{{ value.examType }} {{ value.year }}</bdi> · {{ i18n.t(value.sessionType === 'COMPLEMENTARY' ? 'session.complementary' : 'session.normal') }}</span></div>
+      @if (!value.candidateCount) { <app-ui-state class="mt-6" kind="empty" [message]="i18n.t('a11y.empty')" /> }
+      <div class="kpi-grid">
+        <article class="stat-card"><span class="kpi-icon"><mat-icon>groups</mat-icon></span><h3>{{ i18n.t('statistics.candidates') }}</h3><strong><bdi>{{ value.candidateCount | number }}</bdi></strong></article>
+        <article class="stat-card"><span class="kpi-icon"><mat-icon>task_alt</mat-icon></span><h3>{{ i18n.t('statistics.admitted') }}</h3><strong><bdi>{{ value.admittedCount | number }}</bdi></strong></article>
+        <article class="stat-card stat-card--blue"><span class="kpi-icon"><mat-icon>bar_chart</mat-icon></span><h3>{{ i18n.t('statistics.successRate') }}</h3><strong><bdi>{{ value.successRate.toFixed(2) }}<small>%</small></bdi></strong></article>
+        <article class="stat-card stat-card--violet"><span class="kpi-icon"><mat-icon>analytics</mat-icon></span><h3>{{ i18n.t('statistics.average') }}@if (value.examType === 'C1AS') { · {{ i18n.t('result.total') }} }</h3><strong><bdi>{{ value.averageScore?.toFixed(2) ?? '—' }}</bdi></strong></article>
+        <article class="stat-card stat-card--turquoise"><span class="kpi-icon"><mat-icon>event_repeat</mat-icon></span><h3>{{ i18n.t('statistics.secondSession') }}</h3><strong><bdi>{{ value.secondSessionCount | number }}</bdi></strong></article>
       </div>
-
-      <div class="mt-8 grid gap-6 lg:grid-cols-2">
-        <article class="rounded-[2rem] border border-slate-200 bg-white p-6">
-          <h2 class="text-xl font-extrabold text-slate-950">{{ i18n.t('statistics.byWilaya') }}</h2>
-          <div class="mt-6 space-y-4">
+      <div class="distribution-grid">
+        <article class="ui-card distribution-card"><h2><mat-icon>location_on</mat-icon>{{ i18n.t('statistics.byWilaya') }}</h2>
+          <ul class="distribution-list">
             @for (item of value.byWilaya; track item.code) {
-              <div>
-                <div class="flex justify-between gap-4 text-sm"><strong>{{ label(item.labelFr, item.labelAr, item.code) }}</strong><span>{{ item.count }} · {{ item.percentage }}%</span></div>
-                <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full bg-emerald-600" [style.width.%]="item.percentage"></div></div>
-              </div>
-            }
-          </div>
+              <li><div class="distribution-label"><strong>{{ label(item.labelFr, item.labelAr, item.code) }}</strong><span><bdi>{{ item.count | number }}</bdi><bdi>{{ item.percentage }}%</bdi></span></div><div class="distribution-track" aria-hidden="true"><div [style.width.%]="item.percentage"></div></div></li>
+            } @empty { <li class="distribution-empty"><mat-icon>bar_chart</mat-icon><p>{{ i18n.t('statistics.noSeries') }}</p></li> }
+          </ul>
         </article>
-
-        <article class="rounded-[2rem] border border-slate-200 bg-white p-6">
-          <h2 class="text-xl font-extrabold text-slate-950">{{ i18n.t('statistics.bySeries') }}</h2>
-          <div class="mt-6 space-y-4">
+        <article class="ui-card distribution-card distribution-card--violet"><h2><mat-icon>category</mat-icon>{{ i18n.t('statistics.bySeries') }}</h2>
+          <ul class="distribution-list">
             @for (item of value.bySeries; track item.code) {
-              <div>
-                <div class="flex justify-between gap-4 text-sm"><strong>{{ label(item.labelFr, item.labelAr, item.code) }}</strong><span>{{ item.count }} · {{ item.percentage }}%</span></div>
-                <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full bg-emerald-600" [style.width.%]="item.percentage"></div></div>
-              </div>
-            } @empty {
-              <p class="text-slate-500">{{ i18n.t('statistics.noSeries') }}</p>
-            }
-          </div>
+              <li><div class="distribution-label"><strong>{{ label(item.labelFr, item.labelAr, item.code) }}</strong><span><bdi>{{ item.count | number }}</bdi><bdi>{{ item.percentage }}%</bdi></span></div><div class="distribution-track" aria-hidden="true"><div [style.width.%]="item.percentage"></div></div></li>
+            } @empty { <li class="distribution-empty"><mat-icon>bar_chart</mat-icon><p>{{ i18n.t('statistics.noSeries') }}</p></li> }
+          </ul>
         </article>
       </div>
     }

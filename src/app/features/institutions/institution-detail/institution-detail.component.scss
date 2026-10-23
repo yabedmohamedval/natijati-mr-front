@@ -1,0 +1,30 @@
+.institution-identity { margin-block-start: var(--space-6); padding: clamp(1.5rem, 4vw, 2.5rem); border-block-start: 4px solid var(--color-brand); background: linear-gradient(135deg, var(--color-surface) 55%, var(--color-brand-soft)); }
+.identity-context { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-4); }
+.identity-icon { display: grid; place-items: center; inline-size: 56px; block-size: 56px; border-radius: var(--radius-control); background: var(--color-brand-soft); color: var(--color-brand); }
+.institution-identity h1 { margin-block: var(--space-6) var(--space-4); font-size: clamp(1.75rem, 3vw, 2.5rem); overflow-wrap: anywhere; }
+.identity-location { display: flex; align-items: start; gap: var(--space-2); margin: 0; color: var(--color-muted); }
+.identity-location mat-icon { flex-shrink: 0; }
+.institution-kpis { display: grid; gap: var(--space-4); margin-block-start: var(--space-6); }
+.stat-card { gap: var(--space-3); padding: var(--space-6); }
+.stat-card mat-icon { color: var(--color-brand); }
+.stat-card--turquoise mat-icon { color: var(--color-turquoise); }
+.stat-card--violet mat-icon { color: var(--color-violet); }
+.stat-card--blue mat-icon { color: var(--color-blue); }
+.stat-card h2 { margin: 0; font-size: var(--text-sm); font-weight: 500; color: var(--color-muted); }
+.stat-card strong { margin-block-start: auto; align-self: start; font-size: clamp(1.75rem, 2.4vw, 2.25rem); font-variant-numeric: tabular-nums; }
+.institution-distributions { display: grid; gap: var(--space-6); margin-block-start: var(--space-8); }
+.distribution-card { padding: clamp(1.25rem, 3vw, 2rem); min-inline-size: 0; }
+.distribution-card h2 { display: flex; align-items: start; gap: var(--space-3); margin: 0; font-size: var(--text-lg); font-weight: 800; }
+.distribution-card h2 mat-icon { color: var(--color-brand); flex-shrink: 0; }
+.distribution-card--violet h2 mat-icon { color: var(--color-violet); }
+.distribution-list { display: grid; gap: var(--space-6); margin-block: var(--space-8) 0; padding: 0; list-style: none; }
+.distribution-label { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2) var(--space-4); margin-block-end: var(--space-3); font-size: var(--text-sm); }
+.distribution-label strong { font-weight: 600; overflow-wrap: anywhere; }
+.distribution-label span { color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.distribution-track { block-size: 8px; overflow: hidden; border-radius: var(--radius-pill); background: var(--color-canvas); }
+.distribution-track > div { block-size: 100%; border-radius: inherit; background: var(--color-brand); }
+.distribution-card--violet .distribution-track > div { background: var(--color-violet); }
+.distribution-empty { display: grid; justify-items: center; gap: var(--space-3); padding-block: var(--space-8); text-align: center; color: var(--color-muted); }
+.distribution-empty p { margin: 0; font-size: var(--text-sm); }
+@media (min-width: 600px) { .institution-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .institution-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } .institution-distributions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

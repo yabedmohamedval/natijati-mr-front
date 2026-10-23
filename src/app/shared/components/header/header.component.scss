@@ -1,102 +1,32 @@
-:host {
-  display: block;
-}
-
-.brand-mark {
-  display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
-  place-items: center;
-
-  border-radius: 0.9rem;
-
-  background:
-    linear-gradient(
-      145deg,
-      #059669,
-      #006b55
-    );
-
-  color: white;
-  font-family: 'Tajawal', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 800;
-
-  box-shadow:
-    0 10px 25px rgb(5 150 105 / 20%);
-}
-
-.nav-link {
-  position: relative;
-
-  padding-block: 0.6rem;
-
-  color: #475569;
-  font-size: 0.875rem;
-  font-weight: 700;
-  text-decoration: none;
-
-  transition:
-    color 160ms ease,
-    transform 160ms ease;
-}
-
-.nav-link:hover {
-  color: #047857;
-}
-
-.nav-link::after {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
-  height: 2px;
-
-  border-radius: 999px;
-  background: #059669;
-
-  content: '';
-  opacity: 0;
-  transform: scaleX(0.25);
-
-  transition:
-    opacity 160ms ease,
-    transform 160ms ease;
-}
-
-.nav-link.active {
-  color: #047857;
-}
-
-.nav-link.active::after {
-  opacity: 1;
-  transform: scaleX(1);
-}
-
-.language-button {
-  min-width: auto;
-  border-color: #dbe7e2;
-  border-radius: 999px;
-
-  color: #065f46;
-  font-weight: 700;
-}
-
-.mobile-menu-button {
-  color: #065f46;
-}
-
-@media (max-width: 480px) {
-  .language-button {
-    padding-inline: 0.7rem;
-  }
-
-  .language-button mat-icon {
-    margin-inline-end: 0;
-  }
-
-  .language-button span {
-    display: none;
-  }
+:host { display: block; position: sticky; inset-block-start: 0; z-index: 50; padding-block-start: var(--space-3); padding-inline: var(--page-gutter); }
+.site-header { max-inline-size: var(--container-wide); margin-inline: auto; border: 1px solid rgb(255 255 255 / 90%); border-radius: var(--radius-card); background: rgb(255 255 255 / 95%); box-shadow: var(--shadow-card); backdrop-filter: blur(16px); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); min-block-size: 76px; padding: var(--space-3) var(--space-6); }
+.brand { display: inline-flex; align-items: center; gap: var(--space-3); color: var(--color-ink); text-decoration: none; flex-shrink: 0; }
+.brand-mark { display: grid; inline-size: 46px; block-size: 46px; flex-shrink: 0; place-items: center; border-radius: var(--radius-control); background: linear-gradient(145deg, #009779, var(--color-brand-strong)); color: white; font-family: 'Tajawal', sans-serif; font-size: 1.5rem; font-weight: 800; box-shadow: 0 4px 12px rgb(0 127 101 / 12%); }
+.brand-copy { display: grid; gap: 2px; }
+.brand-name { font-size: 1.25rem; font-weight: 800; letter-spacing: -.04em; line-height: 1.2; }
+.brand-name > span { color: var(--color-brand); }
+.brand-subtitle { font-size: .625rem; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--color-muted); }
+.desktop-navigation { display: none; align-items: center; gap: clamp(1rem, 1.6vw, 1.5rem); }
+.nav-link { position: relative; display: inline-flex; align-items: center; min-block-size: 44px; color: var(--color-muted); font-size: var(--text-sm); font-weight: 600; text-decoration: none; white-space: nowrap; transition: color 160ms ease; }
+.nav-link:hover, .nav-link.active { color: var(--color-brand-strong); }
+.nav-link::after { position: absolute; inset-inline: 0; inset-block-end: 0; block-size: 2px; border-radius: var(--radius-pill); background: var(--color-brand); content: ''; transform: scaleX(0); transition: transform 160ms ease; }
+.nav-link.active::after { transform: scaleX(1); }
+.header-actions { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
+.language-button { --mat-button-outlined-container-shape: var(--radius-pill); --mat-button-outlined-horizontal-padding: 16px; }
+.language-button[lang='ar'] { font-family: 'Tajawal', sans-serif; }
+.language-button[lang='fr'] { font-family: 'Inter', sans-serif; }
+.mobile-menu-button { color: var(--color-muted); }
+:host-context([dir='rtl']) .brand-subtitle { letter-spacing: 0; font-size: var(--text-xs); }
+@media (min-width: 1200px) { .desktop-navigation { display: flex; } .mobile-menu-button { display: none; } }
+@media (max-width: 599px) {
+  :host { padding-inline: var(--space-2); padding-block-start: var(--space-2); }
+  .header-inner { padding: var(--space-3); gap: var(--space-2); }
+  .brand { gap: var(--space-2); }
+  .brand-mark { inline-size: 38px; block-size: 42px; }
+  .brand-name { font-size: 1rem; }
+  .brand-subtitle { font-size: .5rem; letter-spacing: .08em; }
+  .header-actions { gap: 0; }
+  .language-button { --mat-button-outlined-horizontal-padding: 10px; min-inline-size: 44px; }
+  .language-button .mat-icon { display: none; }
 }

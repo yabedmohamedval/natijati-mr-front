@@ -1,3 +1,4 @@
+import { UiStateComponent } from '../../shared/components/ui-state/ui-state.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -13,7 +14,7 @@ import { ResultsApiService } from '../../core/services/results-api.service';
 @Component({
   selector: 'app-result',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, MatIconModule],
+  imports: [UiStateComponent, RouterLink, MatButtonModule, MatIconModule],
   templateUrl: './result.component.html',
   styleUrl: './result.component.scss'
 })

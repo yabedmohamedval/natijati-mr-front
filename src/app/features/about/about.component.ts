@@ -6,7 +6,8 @@ import { I18nService } from '../../core/services/i18n.service';
   selector: 'app-about',
   standalone: true,
   imports: [MatIconModule],
-  templateUrl: './about.component.html'
+  templateUrl: './about.component.html',
+  styleUrl: './about.component.scss'
 })
 export class AboutComponent {
   readonly i18n = inject(I18nService);

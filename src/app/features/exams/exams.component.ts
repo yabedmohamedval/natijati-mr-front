@@ -1,9 +1,9 @@
+import { UiStateComponent } from '../../shared/components/ui-state/ui-state.component';
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs';
 import { ExamAvailability } from '../../core/models/public-catalog.models';
 import { I18nService } from '../../core/services/i18n.service';
@@ -16,8 +16,9 @@ export type SessionType =
 @Component({
   selector: 'app-exams',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
-  templateUrl: './exams.component.html'
+  imports: [UiStateComponent, RouterLink, DecimalPipe, MatButtonModule, MatIconModule],
+  templateUrl: './exams.component.html',
+  styleUrl: './exams.component.scss'
 })
 export class ExamsComponent {
   readonly i18n = inject(I18nService);

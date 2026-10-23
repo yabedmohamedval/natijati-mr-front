@@ -1,0 +1,49 @@
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme((color: (primary: mat.$green-palette, tertiary: mat.$violet-palette), typography: (plain-family: var(--font-body), brand-family: var(--font-body)), density: 0));
+  @include mat.theme-overrides((
+    primary: var(--color-brand), on-primary: #fff,
+    surface: var(--color-surface), on-surface: var(--color-ink),
+    on-surface-variant: var(--color-muted), outline: var(--color-control-border),
+    error: var(--color-danger), plain-font-family: var(--font-body), brand-font-family: var(--font-body)
+  ));
+  @include mat.button-overrides((
+    filled-container-shape: var(--radius-control), outlined-container-shape: var(--radius-control),
+    filled-container-height: 48px, outlined-container-height: 48px, text-container-height: 48px,
+    filled-label-text-weight: 700, outlined-label-text-weight: 700, text-label-text-weight: 700,
+    filled-label-text-tracking: 0, outlined-label-text-tracking: 0, text-label-text-tracking: 0,
+    outlined-outline-color: var(--color-control-border)
+  ));
+  @include mat.form-field-overrides((
+    outlined-container-shape: var(--radius-control),
+    outlined-outline-color: var(--color-control-border),
+    outlined-hover-outline-color: var(--color-muted),
+    outlined-focus-outline-color: var(--color-brand),
+    container-text-tracking: 0, outlined-label-text-tracking: 0, subscript-text-tracking: 0
+  ));
+  @include mat.menu-overrides((
+    container-color: var(--color-surface), container-shape: var(--radius-card),
+    container-elevation-shadow: var(--shadow-overlay), item-label-text-tracking: 0
+  ));
+  @include mat.select-overrides((panel-background-color: var(--color-surface), trigger-text-tracking: 0));
+  @include mat.paginator-overrides((container-background-color: var(--color-surface)));
+}
+
+mat-form-field { align-self: start; min-inline-size: 0; max-inline-size: 100%; }
+.mat-mdc-form-field-icon-prefix { padding-inline: 14px 10px !important; color: var(--color-muted); }
+.mat-mdc-paginator-container, .mat-mdc-paginator-range-actions { flex-wrap: wrap; }
+.mat-mdc-paginator-range-label { margin-inline: var(--space-2) !important; }
+.mobile-navigation-menu {
+  border: 1px solid var(--color-border);
+  min-inline-size: min(18rem, calc(100vw - 2rem)) !important;
+  max-inline-size: calc(100vw - 2rem) !important;
+  .mat-mdc-menu-item { min-block-size: 48px; }
+  .active { background: var(--color-brand-soft); color: var(--color-brand-strong); }
+  .active .mat-icon { color: inherit; }
+}
+@media (max-width: 480px) { .mat-mdc-paginator-container { justify-content: center; } }
+
+/* Tailwind preflight sets a solid border style on every element. The open edge
+   of Material's label notch must stay borderless in both writing directions. */
+.mdc-notched-outline__notch { border-inline-end-style: none !important; }

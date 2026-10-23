@@ -1,3 +1,4 @@
+import { UiStateComponent } from '../../../shared/components/ui-state/ui-state.component';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -6,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
 import {
@@ -22,6 +22,7 @@ import { PublicCatalogApiService } from '../../../core/services/public-catalog-a
   selector: 'app-institution-list',
   standalone: true,
   imports: [
+    UiStateComponent,
     ReactiveFormsModule,
     RouterLink,
     MatButtonModule,
@@ -29,10 +30,10 @@ import { PublicCatalogApiService } from '../../../core/services/public-catalog-a
     MatIconModule,
     MatInputModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule,
     MatSelectModule
   ],
-  templateUrl: './institution-list.component.html'
+  templateUrl: './institution-list.component.html',
+  styleUrl: './institution-list.component.scss'
 })
 export class InstitutionListComponent {
   readonly i18n = inject(I18nService);

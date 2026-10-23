@@ -5,7 +5,9 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
+import { ExamSelectorComponent } from '../../shared/components/exam-selector/exam-selector.component';
+import { Router, RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,6 +25,7 @@ import { I18nService } from '../../core/services/i18n.service';
   selector: 'app-home',
   standalone: true,
   imports: [
+    DecimalPipe, RouterLink, ExamSelectorComponent,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,

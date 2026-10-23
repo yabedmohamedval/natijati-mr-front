@@ -65,4 +65,11 @@ describe('HomeComponent rendered form', () => {
     expect(error.textContent).toContain(TestBed.inject(I18nService).t('search.numericOnly'));
     expect(field.getAttribute('aria-describedby')).toContain(error.id);
   });
+
+  it('uses only the selected published session count, with no static candidate KPI', () => {
+    publish();
+    const content = fixture.nativeElement.textContent;
+    expect(content).not.toContain(TestBed.inject(I18nService).t('stats.candidates'));
+    expect(fixture.nativeElement.querySelector('.catalog-status').textContent).toContain('1');
+  });
 });

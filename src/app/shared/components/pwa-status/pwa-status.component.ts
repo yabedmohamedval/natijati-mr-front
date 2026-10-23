@@ -7,14 +7,15 @@ import { I18nService } from '../../../core/services/i18n.service';
 @Component({
   selector: 'app-pwa-status',
   standalone: true,
+  styles: `:host { display: block; padding-inline: var(--page-gutter); max-inline-size: calc(var(--container-wide) + 2 * var(--page-gutter)); margin-inline: auto; }`,
   template: `
     @if (offline()) {
-      <p role="status" class="m-0 bg-amber-50 px-5 py-3 text-center text-amber-950">{{ i18n.t('pwa.offline') }}</p>
+      <p role="status" class="ui-alert ui-alert--warning">{{ i18n.t('pwa.offline') }}</p>
     }
     @if (ready() || unrecoverable()) {
-      <div role="status" class="flex flex-wrap items-center justify-center gap-3 bg-emerald-50 px-5 py-3 text-emerald-950">
+      <div role="status" class="ui-alert" [class.ui-alert--error]="unrecoverable()">
         <span>{{ i18n.t(unrecoverable() ? 'pwa.unrecoverable' : 'pwa.ready') }}</span>
-        <button type="button" class="rounded border border-current px-3 py-1 font-bold disabled:opacity-50"
+        <button type="button" class="ui-button ui-button--secondary"
           [disabled]="offline()" (click)="reload()">{{ i18n.t('pwa.reload') }}</button>
       </div>
     }

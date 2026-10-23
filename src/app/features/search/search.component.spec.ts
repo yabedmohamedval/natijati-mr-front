@@ -45,4 +45,21 @@ describe('SearchComponent rendered interactions', () => {
     next.flush({content:[],page:1,size:20,totalElements:30,totalPages:2});harness.detectChanges();
     expect(harness.routeNativeElement?.textContent).toContain(TestBed.inject(I18nService).t('advanced.empty'));
   });
+
+  it('changes the exam through cards, submits C1AS criteria and restores BAC on reset', async () => {
+    await harness.navigateByUrl('/search');
+    (harness.routeNativeElement?.querySelector('[data-exam=C1AS]') as HTMLButtonElement).click(); harness.detectChanges();
+    expect(harness.routeNativeElement?.querySelector('[data-exam=C1AS]')?.getAttribute('aria-pressed')).toBe('true');
+    expect(harness.routeNativeElement?.textContent).toContain(TestBed.inject(I18nService).t('result.dossier'));
+    harness.routeNativeElement?.querySelector('form')?.dispatchEvent(new Event('submit', {cancelable:true}));
+    const req = http.expectOne(r => r.url.endsWith('/search'));
+    expect(req.request.params.get('examType')).toBe('C1AS');
+    req.flush({content:[{examType:'C1AS',year:2026,sessionType:'NORMAL',identifier:'001',score:180,nameFr:'Test',decisionLabel:null}],page:0,size:20,totalElements:1,totalPages:1}); harness.detectChanges();
+    expect(harness.routeNativeElement?.querySelector('.result-score')?.textContent).toContain('180.00');
+    expect(harness.routeNativeElement?.querySelector('.result-score')?.textContent).not.toContain('/ 20');
+    expect(harness.routeNativeElement?.querySelector('.result-decision')).toBeNull();
+    (harness.routeNativeElement?.querySelector('.filter-actions button[type=button]') as HTMLButtonElement).click(); harness.detectChanges();
+    expect(harness.routeNativeElement?.querySelector('[data-exam=BAC]')?.getAttribute('aria-pressed')).toBe('true');
+    expect(harness.routeNativeElement?.querySelector('.result-row')).toBeNull();
+  });
 });

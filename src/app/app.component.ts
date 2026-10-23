@@ -4,18 +4,20 @@ import { PageMetadataService } from './core/services/page-metadata.service';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PwaStatusComponent } from './shared/components/pwa-status/pwa-status.component';
+import { FooterComponent } from './shared/components/footer/footer.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [BidiModule, RouterOutlet, HeaderComponent, PwaStatusComponent],
+  imports: [BidiModule, RouterOutlet, HeaderComponent, PwaStatusComponent, FooterComponent],
   template: `
-    <div [dir]="i18n.direction()" class="min-h-screen bg-[var(--page-bg)] text-[var(--text-main)]">
+    <div [dir]="i18n.direction()" class="app-shell">
       <a class="skip-link" href="#main-content" (click)="skip($event)">{{ i18n.t('a11y.skip') }}</a>
       <app-header />
       <app-pwa-status />
       <router-outlet (activate)="activate()" />
+      <app-footer />
     </div>
   `
 })

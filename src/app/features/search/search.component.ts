@@ -1,3 +1,6 @@
+import { DecimalPipe } from '@angular/common';
+import { ExamSelectorComponent } from '../../shared/components/exam-selector/exam-selector.component';
+import { UiStateComponent } from '../../shared/components/ui-state/ui-state.component';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -25,6 +28,8 @@ import {
   selector: 'app-search',
   standalone: true,
   imports: [
+    DecimalPipe, ExamSelectorComponent,
+    UiStateComponent,
     ReactiveFormsModule,
     RouterLink,
     MatButtonModule,

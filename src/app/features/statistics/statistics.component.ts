@@ -1,9 +1,10 @@
+import { DecimalPipe } from '@angular/common';
+import { UiStateComponent } from '../../shared/components/ui-state/ui-state.component';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
 import { ExamType, SessionType, StatisticsResponse } from '../../core/models/public-catalog.models';
@@ -13,8 +14,9 @@ import { PublicCatalogApiService } from '../../core/services/public-catalog-api.
 @Component({
   selector: 'app-statistics',
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatProgressSpinnerModule, MatSelectModule],
-  templateUrl: './statistics.component.html'
+  imports: [DecimalPipe, UiStateComponent, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatSelectModule],
+  templateUrl: './statistics.component.html',
+  styleUrl: './statistics.component.scss'
 })
 export class StatisticsComponent {
   readonly i18n = inject(I18nService);

@@ -1,8 +1,8 @@
+import { UiStateComponent } from '../../../shared/components/ui-state/ui-state.component';
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { catchError, combineLatest, finalize, of, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InstitutionDetail } from '../../../core/models/public-catalog.models';
@@ -12,8 +12,9 @@ import { PublicCatalogApiService } from '../../../core/services/public-catalog-a
 @Component({
   selector: 'app-institution-detail',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
-  templateUrl: './institution-detail.component.html'
+  imports: [UiStateComponent, RouterLink, MatButtonModule, MatIconModule],
+  templateUrl: './institution-detail.component.html',
+  styleUrl: './institution-detail.component.scss'
 })
 export class InstitutionDetailComponent {
   readonly i18n = inject(I18nService);

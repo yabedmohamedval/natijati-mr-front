@@ -1,183 +1,38 @@
-<header
-  class="sticky top-0 z-50 border-b border-white/60 bg-white/80 backdrop-blur-xl"
->
-  <div
-    class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8"
-  >
-    <!-- Logo -->
-    <a
-      routerLink="/"
-      class="flex items-center gap-3 no-underline"
-      [attr.aria-label]="'Natijati MR — ' + i18n.t('nav.home')"
-    >
-      <div class="brand-mark">
-        ن
-      </div>
-
-      <div>
-        <div
-          class="text-lg font-extrabold tracking-tight text-slate-900"
-        >
-          Natijati
-          <span class="text-emerald-700">
-            MR
-          </span>
-        </div>
-
-        <div
-          class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600"
-        >
-          {{ i18n.t('brand.subtitle') }}
-        </div>
-      </div>
+<header class="site-header">
+  <div class="header-inner">
+    <a routerLink="/" class="brand" [attr.aria-label]="'Natijati MR — ' + i18n.t('nav.home')">
+      <span class="brand-mark" aria-hidden="true">ن</span>
+      <span class="brand-copy">
+        <span class="brand-name" dir="ltr">Natijati <span>MR</span></span>
+        <span class="brand-subtitle">{{ i18n.t('brand.subtitle') }}</span>
+      </span>
     </a>
 
-    <!-- Navigation desktop -->
-    <nav
-      class="hidden items-center gap-6 lg:flex"
-      [attr.aria-label]="i18n.t('a11y.navigation')"
-    >
-      <a
-        routerLink="/"
-        routerLinkActive="active" ariaCurrentWhenActive="page"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="nav-link"
-      >
-        {{ i18n.t('nav.home') }}
-      </a>
-
-      <a
-        routerLink="/exams"
-        routerLinkActive="active" ariaCurrentWhenActive="page"
-        class="nav-link"
-      >
-        {{ i18n.t('nav.exams') }}
-      </a>
-
-      <a
-        routerLink="/search"
-        routerLinkActive="active" ariaCurrentWhenActive="page"
-        class="nav-link"
-      >
-        {{ i18n.t('nav.advancedSearch') }}
-      </a>
-
-      <a
-        routerLink="/statistics"
-        routerLinkActive="active" ariaCurrentWhenActive="page"
-        class="nav-link"
-      >
-        {{ i18n.t('nav.statistics') }}
-      </a>
-
-      <a
-        routerLink="/institutions"
-        routerLinkActive="active" ariaCurrentWhenActive="page"
-        class="nav-link"
-      >
-        {{ i18n.t('nav.institutions') }}
-      </a>
-
-      <a
-        routerLink="/about"
-        routerLinkActive="active" ariaCurrentWhenActive="page"
-        class="nav-link"
-      >
-        {{ i18n.t('nav.about') }}
-      </a>
+    <nav class="desktop-navigation" [attr.aria-label]="i18n.t('a11y.navigation')">
+      @for (item of navigation; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" ariaCurrentWhenActive="page"
+          [routerLinkActiveOptions]="{ exact: item.path === '/' }" class="nav-link">{{ i18n.t(item.label) }}</a>
+      }
     </nav>
 
-    <!-- Actions à droite -->
-    <div class="flex items-center gap-2">
-      <!-- Changement de langue -->
-      <button
-        mat-stroked-button
-        type="button"
-        class="language-button"
-        (click)="i18n.toggleLanguage()"
+    <div class="header-actions">
+      <button mat-stroked-button type="button" class="language-button" (click)="i18n.toggleLanguage()"
         [attr.aria-label]="i18n.isArabic() ? i18n.t('language.fr') : i18n.t('language.ar')"
-      >
+        [attr.lang]="i18n.isArabic() ? 'fr' : 'ar'">
         <mat-icon>language</mat-icon>
-
-        <span>
-          {{
-            i18n.isArabic()
-              ? i18n.t('language.fr')
-              : i18n.t('language.ar')
-          }}
-        </span>
+        <span>{{ i18n.isArabic() ? i18n.t('language.fr') : i18n.t('language.ar') }}</span>
       </button>
-
-      <!-- Menu mobile -->
-      <button
-        mat-icon-button
-        type="button"
-        class="mobile-menu-button lg:hidden"
-        [matMenuTriggerFor]="mobileMenu"
-        [attr.aria-label]="i18n.t('nav.openMenu')"
-      >
-        <mat-icon>menu</mat-icon>
-      </button>
+      <button mat-icon-button type="button" class="mobile-menu-button" [matMenuTriggerFor]="mobileMenu"
+        [attr.aria-label]="i18n.t('nav.openMenu')"><mat-icon>menu</mat-icon></button>
     </div>
   </div>
 </header>
 
-<!-- Menu mobile -->
-<mat-menu
-  #mobileMenu="matMenu"
-  class="mobile-navigation-menu"
->
-  <a
-    mat-menu-item
-    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
-    routerLink="/"
-  >
-    <mat-icon>home</mat-icon>
-    <span>{{ i18n.t('nav.home') }}</span>
-  </a>
-
-  <a
-    mat-menu-item
-    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
-    routerLink="/exams"
-  >
-    <mat-icon>school</mat-icon>
-    <span>{{ i18n.t('nav.exams') }}</span>
-  </a>
-
-  <a
-    mat-menu-item
-    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
-    routerLink="/search"
-  >
-    <mat-icon>manage_search</mat-icon>
-    <span>{{ i18n.t('nav.advancedSearch') }}</span>
-  </a>
-
-  <a
-    mat-menu-item
-    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
-    routerLink="/statistics"
-  >
-    <mat-icon>bar_chart</mat-icon>
-    <span>{{ i18n.t('nav.statistics') }}</span>
-  </a>
-
-  <a
-    mat-menu-item
-    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
-    routerLink="/institutions"
-  >
-    <mat-icon>account_balance</mat-icon>
-    <span>{{ i18n.t('nav.institutions') }}</span>
-  </a>
-
-  <a
-    mat-menu-item
-    routerLinkActive="active" ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: true }"
-    routerLink="/about"
-  >
-    <mat-icon>info</mat-icon>
-    <span>{{ i18n.t('nav.about') }}</span>
-  </a>
+<mat-menu #mobileMenu="matMenu" class="mobile-navigation-menu" xPosition="before">
+  @for (item of navigation; track item.path) {
+    <a mat-menu-item [routerLink]="item.path" routerLinkActive="active" ariaCurrentWhenActive="page"
+      [routerLinkActiveOptions]="{ exact: item.path === '/' }">
+      <mat-icon>{{ item.icon }}</mat-icon><span>{{ i18n.t(item.label) }}</span>
+    </a>
+  }
 </mat-menu>
